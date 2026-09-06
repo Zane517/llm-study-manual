@@ -5,7 +5,7 @@
 [简体中文](./README.md) | **English**
 
 > From fundamentals to practice, a systematic self-study guide to Large Language Models
-> Single file · Zero dependency · Offline readable
+> Bilingual support · CSS/JS separation · Offline readable
 
 </div>
 
@@ -13,40 +13,57 @@
 
 ## Introduction
 
-A single-file handbook that systematically covers the complete LLM knowledge chain, from fundamentals to production practice. Suitable for beginners and intermediate learners.
+A self-study handbook that systematically covers the complete LLM knowledge chain, from fundamentals to production practice. Suitable for beginners and intermediate learners.
 
-- **Single file, zero dependencies**: one HTML file works offline without installing anything
-- **Full chain coverage**: from fundamentals (Transformer) to production (deployment / Agent / MCP)
-- **Learner-friendly layout** designed for self-study
+- **Bilingual**: Chinese version `index.html` / English version `index_en.html`, switch language from the sidebar
+- **Full chain coverage**: from fundamentals (Transformer / Attention) to production (deployment / Agent / MCP)
+- **Multi-file structure**: CSS / JS as separate files for maintainability
+- **Offline ready**: download and open in any browser, no dependencies needed
 
 ## Read Online
 
-GitHub Pages live version: **https://zane517.github.io/llm-study-manual/**
+| Version | Link |
+|---|---|
+| 简体中文 | https://zane517.github.io/llm-study-manual/ |
+| English | https://zane517.github.io/llm-study-manual/index_en.html |
 
-> You can also download `大模型系统学习手册.html` from the repo root for offline reading.
+> You can also download `大模型系统学习手册.html` from the repo root for offline reading (single file, zero dependency).
 
 ## Table of Contents
 
-| Chapter | Topic |
-|---|---|
-| Ch. 1 | LLM Fundamentals & AI History |
-| Ch. 2 | Transformer Architecture |
-| Ch. 3 | Pretraining & Tokenizer |
-| Ch. 4 | Fine-tuning & Alignment (SFT / RLHF / DPO) |
-| Ch. 5 | Prompt Engineering |
-| Ch. 6 | RAG (Retrieval-Augmented Generation) |
-| Ch. 7 | AI Agents |
-| Ch. 8 | Multimodal LLMs |
-| Ch. 9 | Deployment & Inference Optimization |
-| Ch. 10 | Evaluation & Safety |
-| Ch. 11 | Application Cases |
-| Ch. 12 | Learning Roadmap & Resources |
+| Chapter | English Title | 中文标题 |
+|---|---|---|
+| Ch. 1 | Fundamentals & How LLMs Work | 基础概念与工作原理 |
+| Ch. 2 | Model Architecture: Transformer & Attention | 模型架构：Transformer 与注意力 |
+| Ch. 3 | Pretraining & Emergent Abilities | 预训练与大模型涌现 |
+| Ch. 4 | Alignment & Safety | 对齐与安全 |
+| Ch. 5 | Inference & Deployment | 推理与部署 |
+| Ch. 6 | Fine-tuning & PEFT | 微调与 PEFT |
+| Ch. 7 | Prompt Engineering & Structured Output | 提示词工程与结构化输出 |
+| Ch. 8 | RAG (Retrieval-Augmented Generation) | RAG 检索增强生成 |
+| Ch. 9 | AI Agents & Tool Calling | AI Agent 与工具调用 |
+| Ch. 10 | Evaluation & Observability | 评估与可观测性 |
+| Ch. 11 | Open-Source Model Landscape | 主流开源模型盘点 |
+| Ch. 12 | Learning Roadmap & Resources | 学习路线与资源清单 |
 
-> Note: exact chapter order and titles follow the handbook content.
+## Repository Structure
+
+```
+├── index.html              # Chinese version
+├── index_en.html           # English version
+├── assets/
+│   ├── css/style.css       # Stylesheet
+│   └── js/main.js          # Scripts
+├── 大模型系统学习手册.html   # Single-file offline version (Chinese)
+├── README.md               # Chinese README
+└── README_EN.md            # English README
+```
 
 ## Local Usage
 
-Double-click `大模型系统学习手册.html` (or `index.html`) to open it in your browser.
+1. Clone the repo: `git clone https://github.com/Zane517/llm-study-manual.git`
+2. Open `index.html` (Chinese) or `index_en.html` (English) in your browser
+3. Or simply double-click `大模型系统学习手册.html` for offline reading
 
 ## License
 
