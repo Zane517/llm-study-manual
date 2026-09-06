@@ -123,6 +123,9 @@ footer{color:var(--muted); font-size:13px; text-align:center; padding:30px 0 40p
   /* 桌面端语言切换栏在移动端隐藏 */
   .lang-switch{display:none}
 
+  /* 收起时隐藏副标题，避免文字被裁切 */
+  .sidebar:not(.open) .brand p{display:none}
+
   /* 侧边栏导航在收起状态下隐藏 */
   .sidebar:not(.open) nav{display:none}
   .sidebar:not(.open) .lang-switch{display:none}
