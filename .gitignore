@@ -2,6 +2,12 @@
 *
 !大模型系统学习手册.html
 !index.html
+!index_en.html
 !README.md
 !README_EN.md
 !.gitignore
+!assets/
+!assets/css/
+!assets/css/style.css
+!assets/js/
+!assets/js/main.js

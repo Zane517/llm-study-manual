@@ -1,90 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>大模型系统学习手册 · 从原理到落地</title>
-<style>
-  :root{
-    --bg:#f6f8fa; --card:#ffffff; --ink:#1f2328; --muted:#59636e;
-    --line:#d8dee4; --brand:#0969da; --brand2:#0550ae; --code-bg:#f0f3f5;
-    --accent:#0a3069;
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    margin:0; font-family:"Microsoft YaHei","PingFang SC",system-ui,-apple-system,sans-serif;
-    color:var(--ink); background:var(--bg,#f6f6fa); line-height:1.75; font-size:16px;
-  }
-  .layout{display:flex; min-height:100vh}
-  /* 侧边栏 */
-  .sidebar{
-    width:280px; flex-shrink:0; background:#101926; color:#e6edf3;
-    position:sticky; top:0; height:100vh; overflow-y:auto; padding:18px 0;
-  }
-  .sidebar .brand{padding:0 20px 16px; border-bottom:1px solid rgba(255,255,255,.1); margin-bottom:12px}
-  .sidebar .brand h1{font-size:17px; margin:0; line-height:1.4}
-  .sidebar .brand p{margin:6px 0 0; font-size:12px; color:#8b98a9}
-  .sidebar nav a{
-    display:block; color:#c9d1d9; text-decoration:none; padding:8px 20px; font-size:14px;
-    border-left:3px solid transparent;
-  }
-  .sidebar nav a:hover{background:rgba(255,255,255,.06); color:#fff}
-  .sidebar nav a.on{border-left-color:#3fb950; background:rgba(63,185,80,.1); color:#7ee787}
-  .sidebar nav .lvl2{padding-left:36px; font-size:13px; color:#a9b8c9}
-  .content{flex:1; min-width:0; max-width:960px; margin:0 auto; padding:40px 48px 80px}
-  .topbar{position:sticky; top:0; background:rgba(246,248,250,.92); backdrop-filter:blur(6px); z-index:5;
-    border-bottom:1px solid var(--line); padding:12px 0; margin-bottom:24px}
-  .topbar .crumbs{font-size:13px; color:var(--muted)}
-  .card{
-    background:var(--card); border:1px solid var(--line); border-radius:8px;
-    padding:26px 28px; margin:26px 0;
-  }
-  h2.sec{
-    font-size:26px; margin:8px 0 4px; color:var(--accent,#0969da);
-    border-bottom:2px solid var(--line); padding-bottom:10px; scroll-margin-top:70px;
-  }
-  h3.sub{font-size:20px; margin:30px 0 10px; color:var(--accent)}
-  h4{font-size:17px; margin:22px 0 8px}
-  p{margin:10px 0}
-  ul,ol{margin:10px 0; padding-left:24px}
-  li{margin:6px 0}
-  code{background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-size:.9em; font-family:Consolas,"Courier New",monospace}
-  pre{
-    background:#0d1117; color:#c9d1d9; border-radius:8px; padding:16px 18px; overflow-x:auto;
-    font-size:14px; line-height:1.6; margin:14px 0; font-family:Consolas,"Courier New",monospace;
-  }
-  pre code{background:none; border:none; padding:0; color:inherit}
-  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:14px}
-  th,td{border:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top}
-  th{background:#f0f3f6; font-weight:600}
-  .tag{display:inline-block; font-size:12px; padding:1px 8px; border-radius:10px; margin-right:6px; vertical-align:middle}
-  .tag-b{background:#ddf4ff; color:#0550ae}
-  .tag-g{background:#dafbe1; color:#1a7f37}
-  .tag-y{background:#fff8c5; color:#9a6700}
-  .tag-r{background:#ffebe9; color:#cf222e}
-  .note{
-    background:#fff8c5; border:1px solid #d4a72c; border-radius:6px; padding:12px 16px; margin:14px 0; font-size:14px;
-  }
-  .tip{
-    background:#dafbe1; border:1px solid #4ac26b; border-radius:6px; padding:12px 16px; margin:14px 0; font-size:14px;
-  }
-  .warn{
-    background:#ffebe9; border:1px solid #ff8182; border-radius:6px; padding:12px 16px; margin:14px 0; font-size:14px;
-  }
-  .progress{
-    height:6px; border-radius:3px; background:var(--line); overflow:hidden; margin:6px 0 2px;
-  }
-  .progress>span{display:block; height:100%; background:linear-gradient(90deg,#0969da,#3fb950)}
-  .toc-note{font-size:13px; color:var(--muted); margin-top:6px}
-  .kbd{display:inline-block; border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:0 6px; font-size:12px; background:#fff}
-  footer{color:var(--muted); font-size:13px; text-align:center; padding:30px 0 40px}
-  @media(max-width:820px){
-    .layout{flex-direction:column}
-    .sidebar{width:100%; height:auto; position:static}
-    .content{padding:20px}
-  }
-</style>
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 <div class="layout">
@@ -94,6 +14,11 @@
       <h1>大模型系统学习手册</h1>
       <p>从原理到落地 · 中文自学版</p>
     </div>
+    <div class="lang-switch">
+      <a href="./index.html" class="active">简体中文</a>
+      <span class="sep">|</span>
+      <a href="./index_en.html">English</a>
+    </div>
     <nav id="nav"></nav>
   </aside>
 
@@ -101,6 +26,11 @@
   <main class="content">
     <div class="topbar">
       <span class="crumbs">首页 / 大模型系统学习手册</span>
+      <div class="mobile-lang">
+        <a href="./index.html" class="active">简体中文</a>
+        <span class="sep">|</span>
+        <a href="./index_en.html">English</a>
+      </div>
     </div>
 
     <!-- 封面 -->
@@ -108,7 +38,7 @@
       <h2 style="border:none; margin:0 0 6px">大模型系统学习手册</h2>
       <p style="color:var(--muted)">面向自学者的中文系统性指南 —— 从 Transformer 原理到 RAG / Agent / 部署落地</p>
       <div class="progress"><span style="width:100%"></span></div>
-      <p class="toc">本手册单文件、零外部依赖，可离线阅读。使用右上/侧边导航跳转章节。</p>
+      <p class="toc">本手册可离线阅读。使用侧边导航跳转章节。中文版 / <a href="./index_en.html">English Version</a></p>
       <ul>
         <li>第 1 章 · 基础概念与工作原理</li>
         <li>第 2 章 · 模型架构（Transformer / 注意力）</li>
@@ -125,7 +55,6 @@
       </ul>
     </div>
 
-    <!-- 各章节占位，将在后续填充 -->
     <section id="ch1">
   <div class="card">
     <h2 class="sec">第 1 章 · 基础概念与工作原理</h2>
@@ -288,7 +217,7 @@ softmax → 归一化成概率权重（和为1）
     <div class="note">💡 <b>一句人话</b>（据「飞天闪客」）：GPT 的底层其实只是 Transformer 的<b>一半</b>——只保留解码器、不做翻译，剩下的就是<b>不停看着前面的词、猜下一个词</b>。而"猜着猜着"，就猜出了聊天、写代码、解数学题的全能本领。它猜的"下一个词"本质就是上文提到的 <b>w、b 参数</b>学出来的。</div>
   </div>
 </section>
-    <section id="ch3">
+<section id="ch3">
   <div class="card">
     <h2 class="sec">第 3 章 · 预训练与大模型涌现</h2>
     <h3 class="sub">3.1 预训练目标：自监督学习</h3>
@@ -1210,39 +1139,11 @@ Action: 完成。今天的北京是晴天，气温 25℃。</pre>
     <div class="tip">💡 大模型学习最忌讳"囤课不练"。<b>做一个能解决你真实问题的作品</b>，比看十门课都值——这也是本手册的初衷。</div>
   </div>
 </section>
-
-    <footer>大模型系统学习手册</footer>
+    
+    <footer>大模型系统学习手册 · <a href="./index_en.html">English</a></footer>
   </main>
 </div>
 
-<script>
-(function(){
-  var nav = document.getElementById('nav');
-  var items = [
-    {t:'1 · 基础概念与原理', id:'ch1'},
-    {t:'2 · 架构与注意力', id:'ch2'},
-    {t:'3 · 预训练与涌现', id:'ch3'},
-    {t:'4 · 对齐与安全', id:'ch4'},
-    {t:'5 · 推理与部署', id:'ch5'},
-    {t:'6 · 微调与 PEFT', id:'ch6'},
-    {t:'7 · 提示词工程', id:'ch7'},
-    {t:'8 · RAG 检索增强', id:'ch8'},
-    {t:'9 · AI Agent', id:'ch9'},
-    {t:'10 · 评估与观测', id:'ch10'},
-    {t:'11 · 主流开源模型', id:'ch11'},
-    {t:'12 · 学习路线与资源', id:'ch12'}
-  ];
-  items.forEach(function(it){
-    var a=document.createElement('a');
-    a.href='#'+it.id; a.textContent=it.t;
-    a.addEventListener('click',function(){
-      var links=nav.querySelectorAll('a');
-      links.forEach(function(x){x.classList.remove('active')});
-      a.classList.add('active');
-    });
-    nav.appendChild(a);
-  });
-})();
-</script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
