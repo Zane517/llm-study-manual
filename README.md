@@ -27,7 +27,14 @@
 | 中文版 | https://zane517.github.io/llm-study-manual/ |
 | English | https://zane517.github.io/llm-study-manual/index_en.html |
 
-> 也可以下载仓库中的 `大模型系统学习手册.html` 离线阅读（单文件，零依赖）。
+## 离线下载
+
+| 版本 | 文件 |
+|---|---|
+| 中文版 | [`大模型系统学习手册.html`](./大模型系统学习手册.html) |
+| English | [`LLM_Study_Manual.html`](./LLM_Study_Manual.html) |
+
+> 单文件，零依赖，下载后直接用浏览器打开即可。
 
 ## 目录
 
@@ -55,6 +62,7 @@
 │   ├── css/style.css       # 样式文件
 │   └── js/main.js          # 脚本文件
 ├── 大模型系统学习手册.html   # 单文件离线版（中文）
+├── LLM_Study_Manual.html    # 单文件离线版（英文）
 ├── README.md               # 中文说明
 └── README_EN.md            # English README
 ```
@@ -63,7 +71,7 @@
 
 1. 克隆仓库：`git clone https://github.com/Zane517/llm-study-manual.git`
 2. 用浏览器打开 `index.html`（中文）或 `index_en.html`（英文）
-3. 或直接双击 `大模型系统学习手册.html` 离线阅读
+3. 或下载离线版：`大模型系统学习手册.html`（中文）/ `LLM_Study_Manual.html`（英文），双击即可打开
 
 ## 版权与声明
 

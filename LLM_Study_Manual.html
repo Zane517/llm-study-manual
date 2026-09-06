@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Study Manual · From Fundamentals to Practice</title>
+<style>
+/* ===== 大模型系统学习手册 · 样式表 ===== */
+
+:root{
+  --bg:#f6f8fa; --card:#ffffff; --ink:#1f2328; --muted:#59636e;
+  --line:#d8dee4; --brand:#0969da; --brand2:#0550ae; --code-bg:#f0f3f5;
+  --accent:#0a3069;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:"Microsoft YaHei","PingFang SC",system-ui,-apple-system,sans-serif;
+  color:var(--ink); background:var(--bg,#f6f6fa); line-height:1.75; font-size:16px;
+}
+.layout{display:flex; min-height:100vh}
+
+/* 侧边栏 */
+.sidebar{
+  width:280px; flex-shrink:0; background:#101926; color:#e6edf3;
+  position:sticky; top:0; height:100vh; overflow-y:auto; padding:18px 0;
+}
+.sidebar .brand{padding:0 20px 16px; border-bottom:1px solid rgba(255,255,255,.1); margin-bottom:12px}
+.sidebar .brand h1{font-size:17px; margin:0; line-height:1.4}
+.sidebar .brand p{margin:6px 0 0; font-size:12px; color:#8b98a9}
+
+/* 语言切换栏 */
+.lang-switch{
+  padding:8px 20px 14px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:8px;
+}
+.lang-switch a{
+  display:inline-block; font-size:13px; padding:3px 14px; border-radius:4px;
+  text-decoration:none; transition:all .2s;
+}
+.lang-switch a.active{
+  background:rgba(63,185,80,.15); color:#7ee787; font-weight:600;
+}
+.lang-switch a:not(.active){
+  color:#8b98a9;
+}
+.lang-switch a:not(.active):hover{
+  color:#c9d1d9; background:rgba(255,255,255,.06);
+}
+.lang-switch .sep{color:rgba(255,255,255,.2); margin:0 2px}
+
+.sidebar nav a{
+  display:block; color:#c9d1d9; text-decoration:none; padding:8px 20px; font-size:14px;
+  border-left:3px solid transparent;
+}
+.sidebar nav a:hover{background:rgba(255,255,255,.06); color:#fff}
+.sidebar nav a.on{border-left-color:#3fb950; background:rgba(63,185,80,.1); color:#7ee787}
+.sidebar nav .lvl2{padding-left:36px; font-size:13px; color:#a9b8c9}
+
+.content{flex:1; min-width:0; max-width:960px; margin:0 auto; padding:40px 48px 80px}
+.topbar{position:sticky; top:0; background:rgba(246,248,250,.92); backdrop-filter:blur(6px); z-index:5;
+  border-bottom:1px solid var(--line); padding:12px 0; margin-bottom:24px}
+.topbar .crumbs{font-size:13px; color:var(--muted)}
+
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:26px 28px; margin:26px 0;
+}
+h2.sec{
+  font-size:26px; margin:8px 0 4px; color:var(--accent,#0969da);
+  border-bottom:2px solid var(--line); padding-bottom:10px; scroll-margin-top:70px;
+}
+h3.sub{font-size:20px; margin:30px 0 10px; color:var(--accent)}
+h4{font-size:17px; margin:22px 0 8px}
+p{margin:10px 0}
+ul,ol{margin:10px 0; padding-left:24px}
+li{margin:6px 0}
+code{background:var(--code-bg); border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-size:.9em; font-family:Consolas,"Courier New",monospace}
+pre{
+  background:#0d1117; color:#c9d1d9; border-radius:8px; padding:16px 18px; overflow-x:auto;
+  font-size:14px; line-height:1.6; margin:14px 0; font-family:Consolas,"Courier New",monospace;
+}
+pre code{background:none; border:none; padding:0; color:inherit}
+table{width:100%; border-collapse:collapse; margin:14px 0; font-size:14px}
+th,td{border:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top}
+th{background:#f0f3f6; font-weight:600}
+.tag{display:inline-block; font-size:12px; padding:1px 8px; border-radius:10px; margin-right:6px; vertical-align:middle}
+.tag-b{background:#ddf4ff; color:#0550ae}
+.tag-g{background:#dafbe1; color:#1a7f37}
+.tag-y{background:#fff8c5; color:#9a6700}
+.tag-r{background:#ffebe9; color:#cf222e}
+.note{
+  background:#fff8c5; border:1px solid #d4a72c; border-radius:6px; padding:12px 16px; margin:14px 0; font-size:14px;
+}
+.tip{
+  background:#dafbe1; border:1px solid #4ac26b; border-radius:6px; padding:12px 16px; margin:14px 0; font-size:14px;
+}
+.warn{
+  background:#ffebe9; border:1px solid #ff8182; border-radius:6px; padding:12px 16px; margin:14px 0; font-size:14px;
+}
+.progress{
+  height:6px; border-radius:3px; background:var(--line); overflow:hidden; margin:6px 0 2px;
+}
+.progress>span{display:block; height:100%; background:linear-gradient(90deg,#0969da,#3fb950)}
+.toc-note{font-size:13px; color:var(--muted); margin-top:6px}
+.kbd{display:inline-block; border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:0 6px; font-size:12px; background:#fff}
+footer{color:var(--muted); font-size:13px; text-align:center; padding:30px 0 40px}
+
+/* 移动端语言切换（顶部栏内显示） */
+.mobile-lang{display:none}
+
+@media(max-width:820px){
+  .layout{flex-direction:column}
+  .sidebar{width:100%; height:auto; position:static}
+  .content{padding:20px}
+  .lang-switch{display:none}
+  .mobile-lang{
+    display:flex; gap:0; align-items:center;
+    padding:0 0 8px;
+  }
+  .mobile-lang a{
+    font-size:13px; padding:3px 10px; border-radius:4px; text-decoration:none;
+  }
+  .mobile-lang a.active{color:var(--brand); font-weight:600; background:#ddf4ff}
+  .mobile-lang a:not(.active){color:var(--muted)}
+  .mobile-lang .sep{color:var(--line); margin:0 2px}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>LLM Study Manual</h1>
+      <p>From Fundamentals to Practice · English Edition</p>
+    </div>
+    <div class="lang-switch">
+      <a href="大模型系统学习手册.html">简体中文</a>
+      <span class="sep">|</span>
+      <a href="LLM_Study_Manual.html" class="active">English</a>
+    </div>
+    <nav id="nav"></nav>
+  </aside>
+
+  <!-- ============ Content ============ -->
+  <main class="content">
+    <div class="topbar">
+      <span class="crumbs">Home / LLM Study Manual</span>
+      <div class="mobile-lang">
+        <a href="大模型系统学习手册.html">简体中文</a>
+        <span class="sep">|</span>
+        <a href="LLM_Study_Manual.html" class="active">English</a>
+      </div>
+    </div>
+
+    <!-- Cover -->
+    <div class="card">
+      <h2 style="border:none; margin:0 0 6px">LLM Study Manual</h2>
+      <p style="color:var(--muted)">A systematic self-study guide — from Transformer fundamentals to RAG / Agents / Deployment</p>
+      <div class="progress"><span style="width:100%"></span></div>
+      <p class="toc">This manual can be read offline. Use the sidebar navigation to jump between chapters. English / <a href="大模型系统学习手册.html">中文版</a></p>
+      <ul>
+        <li>Ch. 1 · Fundamentals & How LLMs Work</li>
+        <li>Ch. 2 · Model Architecture (Transformer / Attention)</li>
+        <li>Ch. 3 · Pretraining & Emergent Abilities</li>
+        <li>Ch. 4 · Alignment (RLHF / DPO / Safety)</li>
+        <li>Ch. 5 · Inference & Deployment (GPU / Quantization / vLLM)</li>
+        <li>Ch. 6 · Fine-tuning (LoRA / PEFT in Practice)</li>
+        <li>Ch. 7 · Prompt Engineering & Structured Output</li>
+        <li>Ch. 8 · RAG (Retrieval-Augmented Generation)</li>
+        <li>Ch. 9 · AI Agents & Tool Calling</li>
+        <li>Ch. 10 · Evaluation & Observability</li>
+        <li>Ch. 11 · Open-Source Model Landscape</li>
+        <li>Ch. 12 · Learning Roadmap & Resources</li>
+      </ul>
+    </div>
+
+    <section id="ch1">
+  <div class="card">
+    <h2 class="sec">Chapter 1 · Fundamentals & How LLMs Work</h2>
+    <h3 class="sub">1.1 What is a Large Language Model (LLM)?</h3>
+    <p>A Large Language Model (LLM) is a <strong>deep neural network</strong> trained on massive text corpora, whose core task is to <b>predict the next token</b>. It doesn't truly "understand" the world — it learns an extremely powerful <b>text probability distribution</b>: given the preceding text, predict the most likely next word/subword.</p>
+    <p>Because training data covers nearly the entirety of human-written knowledge, the model learns patterns of grammar, logic, common sense, code, and even reasoning. When you type a prompt, it generates a reasonable response token by token, based on contextual probabilities.</p>
+
+    <h3 class="sub">1.2 Key Terminology</h3>
+    <table>
+      <tr><th>Term</th><th>Meaning</th></tr>
+      <tr><td>Token</td><td>The smallest text unit the model processes — can be a word, subword, or character. In Chinese, ~1 token per character; in English, ~1.3 tokens per word.</td></tr>
+      <tr><td>Context Window</td><td>The total token limit (input + output) the model can "see" at once, e.g. 8K / 128K / 1M.</td></tr>
+      <tr><td>Parameters</td><td>The number of internal weights, e.g. 7B = 7 billion, 70B = 70 billion. More parameters generally mean stronger capability.</td></tr>
+      <tr><td>Pretraining</td><td>The phase of learning language patterns from massive unlabeled text, producing a "base model."</td></tr>
+      <tr><td>Alignment</td><td>The training phase that makes the model follow instructions, conform to human preferences, and meet safety requirements.</td></tr>
+      <tr><td>Inference</td><td>The process of using a trained model to make predictions on new input (i.e., "generating responses").</td></tr>
+      <tr><td>Generative vs. Discriminative</td><td>LLMs are generative models — they "create" new content, not just classify.</td></tr>
+      <tr><td>Temperature</td><td>Controls output randomness. Low temperature = more deterministic; high temperature = more diverse.</td></tr>
+      <tr><td>Top-p / Top-k</td><td>Sampling strategies that restrict selection to the top-k highest-probability tokens or those with cumulative probability ≤ p.</td></tr>
+    </table>
+
+    <div class="tip">✅ <b>Minimal understanding:</b> An LLM = "a giant probability machine that has read nearly all text, writing the most reasonable answer one word at a time." Grasp this, and everything else connects.</div>
+
+    <h3 class="sub">1.3 Why Does "Predicting the Next Word" Produce Intelligence?</h3>
+    <p>This is the most counterintuitive yet crucial point: how can a model that merely "predicts the next word" write code, reason, and translate? The answer: <b>to predict the next word accurately, the model must internally learn grammar, logic, common sense, knowledge associations, and even some degree of reasoning</b> — just as a person needs to truly understand a sentence to continue it naturally.</p>
+    <p>When training data reaches massive scale and parameters exceed tens of billions, <b>Emergent Abilities</b> appear — capabilities that "suddenly" emerge at a threshold rather than improving smoothly, such as few-shot learning, code generation, and multi-step reasoning.</p>
+
+    <h3 class="sub">1.4 Autoregressive Generation: How "Word-by-Word Output" Works</h3>
+    <p>LLM text generation is an <strong>autoregressive</strong> process:</p>
+    <ol>
+      <li>Input the <code>user prompt</code>; the model predicts a probability distribution for the first token;</li>
+      <li>A token is selected via sampling strategy (temperature / top-p);</li>
+      <li>The new token is appended to the context, and the next token is predicted;</li>
+      <li>Repeat until an end-of-sequence token or maximum length is reached.</li>
+    </ol>
+    <pre><code>Input:  "The capital of China is"
+Step1:  P(Beijing)=0.82  P(Shanghai)=0.10  P(Nanjing)=0.05 ...
+Pick token → "Beijing"
+Input:  "The capital of China is Beijing"
+Step2:  P(.)=0.95  P(!)=... → Pick "."
+...
+Final:  "The capital of China is Beijing."</code></pre>
+
+    <h3 class="sub">1.5 Generation Modes: One-Shot vs. Streaming</h3>
+    <p>In practice, the model can output a complete response at once, or return tokens <strong>streaming</strong> (typewriter effect). Streaming has lower first-token latency and better UX, making it the standard for chat products.</p>
+
+    <h3 class="sub">1.6 A Model's Lifecycle</h3>
+    <p>A typical modern LLM production pipeline follows a three-stage approach: "base model + alignment + fine-tuning":</p>
+    <pre>Massive text ──Pretraining──▶ Base Model
+                                 │
+                                 ▼
+Instruction data ──SFT──▶ Instruction-following Model
+                                 │
+                                 ▼
+Human preferences ──RLHF/DPO──▶ Aligned Model (meets preferences & safety)
+                                 │
+                                 ▼
+Task-specific data ──Fine-tune/LoRA──▶ Vertical/Specialized Model</pre>
+
+    <div class="tip">🧩 <b>One paragraph connecting all concepts:</b><br>
+      <b>Everything is a function</b> → Early "symbolism" tried to write exact functions but failed (can't write "recognize a cat") → Shifted to <b>connectionism</b>: accept no exact solution, find a <b>good enough approximation</b> → Build a <b>complex function (= model)</b> and iteratively adjust <b>parameters (= weights)</b> based on prediction error → Massive parameters = <b>large model</b>; for text = <b>large language model</b>;<br>
+      Adjusting parameters = <b>training</b>; first on massive text = <b>pretraining</b>; then on specific tasks = <b>fine-tuning</b>; computing output with fixed parameters = <b>inference</b>;<br>
+      Parameters large enough to gain unexpected abilities = <b>emergence</b>;<br>
+      Service only, no code/weights = <b>closed-source</b> (GPT/Claude/Gemini); open weights = <b>open-source models</b> (DeepSeek, LLaMA); downloaded locally = <b>private deployment</b>.<br>
+      In use: smallest text unit = <b>Token</b>; all info you give it = <b>context / prompt</b>; randomness control = <b>temperature</b>; sampling = <b>Top-k</b>; confident fabrication = <b>hallucination</b>; fix via web search or private knowledge base (<b>RAG</b>); multi-step orchestration = <b>workflow</b>; autonomous task execution = <b>Agent</b>; multiple agents = <b>multi-agent</b>; the unified interface for AI to operate external tools = <b>MCP</b>.</div>
+    <h3 class="sub">1.7 Chinese Models & Tokenizer</h3>
+    <p>Chinese tokenization differs from English. A good tokenizer merges common characters/words into single tokens to reduce sequence length and improve efficiency. This is why different models consume different token counts for the same Chinese text.</p>
+    <table>
+      <tr><th>Text Segment</th><th>Approx. Token Count</th></tr>
+      <tr><td>"Hello World" (Chinese)</td><td>~1–2 tokens</td></tr>
+      <tr><td>One Chinese sentence (~20 chars)</td><td>~10–18 tokens</td></tr>
+      <tr><td>One page of Chinese (~500 chars)</td><td>~300–450 tokens</td></tr>
+    </table>
+
+    <div class="tip">💡 Remember: <b>you're talking to a giant probability machine</b>, not a conscious entity. Understanding this helps you design prompts and evaluate outputs more rationally.</div>
+  </div>
+</section>
+    <section id="ch2">
+  <div class="card">
+    <h2 class="sec">Chapter 2 · Model Architecture: Transformer & Attention</h2>
+    <div class="tip">🎬 <b>Intuition first</b>: Don't rush to memorize formulas — grasp the development storyline first:<br>
+      ① Everything can be viewed as a <b>function</b> (early "symbolism" tried to write exact functions, but humans can't write "recognize a cat") → Shift to <b>connectionism</b>: accept approximations;<br>
+      ② Use a <b>line</b> (y = wx+b) to approximate, adjusting <code>w</code> and <code>b</code> iteratively → Lines are too rigid, add <b>activation functions</b> to bend them, enabling <b>infinite nesting</b>;<br>
+      ③ Draw this "linear transform + activation" nesting as a graph — each node is a <b>neuron</b>, layers connected = <b>neural network</b>; computing left to right = <b>forward propagation</b>;<br>
+      ④ Everything else (backprop, gradients, Transformer…) is essentially <b>solving for those w, b (weight matrices)</b>.<br>
+      With the mindset that "all models are just guessing a set of function parameters," attention, multi-head, and MoE are just branches on this tree.</div>
+    <h3 class="sub">2.1 From RNN to Transformer: Why Attention?</h3>
+    <p><b>First, turn text into numbers</b>: Computers only process numbers, so each word must be <b>encoded</b> into a vector. Simple numbering (one number per word) is too low-dimensional; <b>One-hot encoding</b> is too sparse and high-dimensional, with all words orthogonal. Enter <b>Embedding</b> — mapping each word to a moderate-dimensional vector where dot product / cosine similarity captures semantic closeness (even "king - man + woman ≈ queen"). These word vectors are the input to the neural network.</p>
+    <p>The original sequence model, <b>RNN</b>, uses a <b>hidden state</b> to pass information across tokens. But it has two fatal flaws: information degrades over long sequences (<b>long-term dependency</b> problem), and it must process tokens sequentially (<b>no parallelism</b>). GRU/LSTM only mitigate, not solve these.</p>
+    <p>In 2017, Google proposed the <strong>Transformer</strong> (paper: <em>Attention Is All You Need</em>), using <b>self-attention</b> to solve both: every token can "directly see" all other tokens, and computation is <b>parallelizable</b>. Attention replaced recurrence as the mainstream.</p>
+
+    <h3 class="sub">2.2 Self-Attention Core Idea</h3>
+    <p>For each token, the model generates three vectors: <strong>Q (Query), K (Key), V (Value)</strong>. The core logic is "<b>who I should attend to, I take information from</b>":</p>
+    <ol>
+      <li>Each token's <code>Q</code> is dotted with all tokens' <code>K</code> to get attention scores;</li>
+      <li>Scores are <code>softmax</code>-normalized into weights;</li>
+      <li>Weights are used to compute a weighted sum of all <code>V</code>s, producing the token's new representation.</li>
+    </ol>
+    <pre><code>Attention(Q,K,V) = softmax( Q·Kᵀ / √d_k ) · V
+
+Q·Kᵀ  →  compute "who relates to whom" scores
+/√d_k  →  scale to prevent large values, gradient vanishing
+softmax → normalize into probability weights (sum to 1)
+·V     →  fuse "value" info by weights</code></pre>
+
+    <h3 class="sub">2.3 Multi-Head Attention</h3>
+    <p>Instead of one set of Q/K/V, split into multiple "heads," each learning different relationships in different subspaces (some capture syntax, some coreference, some semantics), then concatenate. This lets the model simultaneously capture multiple aspects of information.</p>
+
+    <h3 class="sub">2.4 Positional Encoding</h3>
+    <p>Attention itself <b>doesn't distinguish order</b> ("A sees B" and "B sees A" have equal weights). To inform the model of word order, positional information must be injected. Common approaches:</p>
+    <ul>
+      <li><b>Sinusoidal positional encoding</b> (original Transformer);</li>
+      <li><b>RoPE (Rotary Position Embedding)</b>: encodes position into Q/K via rotation matrices, widely adopted by open-source models, friendly to long contexts;</li>
+      <li><b>ALiBi</b>: adds distance-based bias to attention scores, strong extrapolation.</li>
+    </ul>
+
+    <h3 class="sub">2.5 Transformer Components</h3>
+    <p>A typical <b>Decoder-only</b> (generative, used by GPT/LLaMA/Qwen) structure:</p>
+    <pre>Input Tokens
+   │
+Embedding Layer
+   │
+   ▼
+┌────────────────┐    ┌──────────────┐
+│ Masked Multi-Head │ →  │ Feed-Forward  │
+│   Attention       │    │ Network (FFN) │
+└────────────────┘    └──────────────┘
+  Each layer has "Residual Connection + LayerNorm"
+   ▼  (stacked N layers, e.g. 32/80)
+Output Layer → predict next token probability distribution</pre>
+    <p>Key point: <b>Causal Mask</b> ensures each token only sees itself and previous tokens — no "peeking" at the future. This is the foundation of autoregressive generation.</p>
+
+    <h3 class="sub">2.6 Layer Normalization, Residual Connections & FFN</h3>
+    <ul>
+      <li><b>Residual Connection</b>: <code>output = input + sublayer(input)</code>, mitigates deep gradient vanishing, enables 80+ layer networks;</li>
+      <li><b>LayerNorm</b>: stabilizes per-layer value distribution;</li>
+      <li><b>FFN (Feed-Forward Network)</b>: a two-layer MLP, carries most "memory and transformation," the bulk of parameters.</li>
+    </ul>
+
+    <h3 class="sub">2.7 KV Cache: Why Inference is "More Memory-Hungry" Than Training</h3>
+    <p>During autoregressive generation, each new token requires recomputing attention over the entire sequence. To avoid redundant computation, the model caches the <b>K and V</b> of all processed tokens (called <b>KV Cache</b>). As generation grows longer, the KV Cache grows larger — this is the root cause of "high memory usage during inference, especially for long sequences."</p>
+    <div class="note">⚠️ Key takeaway: Training consumes massive <strong>compute</strong>; inference consumes massive <strong>memory (due to KV Cache)</strong>. Understanding this difference is essential for understanding deployment "VRAM" discussions.</div>
+
+    <h3 class="sub">2.8 MoE (Mixture of Experts) Architecture</h3>
+    <p>Recent mainstream models (Mixtral, DeepSeek-V3, Qwen-MoE) adopt <b>MoE</b>: split the FFN into multiple "expert" sub-networks, each token only activates a few experts. The benefit: <b>massive total parameters, but only compute a fraction per inference</b>, balancing compute cost and capability. This explains "671B total, 37B active" type descriptions.</p>
+
+    <h3 class="sub">2.9 Encoder vs. Decoder vs. Encoder-Decoder</h3>
+    <table>
+      <tr><th>Architecture</th><th>Characteristics</th><th>Examples</th></tr>
+      <tr><td>Encoder-only</td><td>Bidirectional understanding, excels at classification/semantics</td><td>BERT, RoBERTa</td></tr>
+      <tr><td>Decoder-only</td><td>Unidirectional generation, excels at continuation/dialogue, modern mainstream</td><td>GPT, LLaMA, Qwen</td></tr>
+      <tr><td>Encoder-Decoder</td><td>Understand then generate, suited for translation/summarization</td><td>T5, BART</td></tr>
+    </table>
+    <div class="tip">✅ Modern LLMs almost exclusively use <b>Decoder-only</b> architecture — it unifies understanding and generation in one framework, and is simpler engineering-wise.</div>
+    <div class="note">💡 <b>In plain English</b>: GPT's base is just <b>half</b> of the Transformer — only the decoder, no translation. The rest is <b>continuously looking at preceding words and guessing the next one</b>. And through "guessing," it developed the ability to chat, write code, and solve math problems. What it "guesses" is ultimately the <b>w, b parameters</b> learned during training.</div>
+  </div>
+</section>
+
+    <section id="ch3">
+  <div class="card">
+    <h2 class="sec">Chapter 3 · Pretraining & Emergent Abilities</h2>
+    <h3 class="sub">3.1 Pretraining Objective: Self-Supervised Learning</h3>
+    <p>Pretraining uses <b>unlabeled data</b> — existing web text serves as its own "label" (predict the next word from context, i.e., "self-supervised"). This is why training can scale with near-infinite text, the fundamental reason models can grow so large.</p>
+
+    <h3 class="sub">3.2 Where Training Data Comes From</h3>
+    <ul>
+      <li><strong>Web crawls</strong> (Common Crawl, etc.) — largest scale, but variable quality;</li>
+      <li><strong>Books, academic papers, encyclopedias</strong> — high-quality long-form text;</li>
+      <li><strong>Code repositories</strong> (GitHub, etc.) — gives coding ability;</li>
+      <li><strong>Conversations, forums, communities</strong> — colloquial and diverse expressions.</li>
+    </ul>
+    <p>Raw data must be <b>cleaned, deduplicated, filtered</b> (remove low-quality/toxic/privacy), and <b>mixed</b> (blended at ratios). Data quality often matters more than model architecture.</p>
+
+    <h3 class="sub">3.3 Data Composition & Governance</h3>
+    <p>Different sources are mixed at specific ratios (e.g. 60% web + 20% code + 10% books + 5% dialogue). Chinese models add extra high-quality Chinese corpus to balance Chinese-English capability. Training may also dynamically adjust ratios (curriculum learning, easy-to-hard).</p>
+
+    <h3 class="sub">3.4 Loss Function: Cross-Entropy</h3>
+    <p>Pretraining uses <b>Cross-Entropy Loss</b> to measure the gap between the model's predicted distribution and the actual next token, updating weights via backpropagation. The goal is to minimize prediction error, making the model better at "continuing text."</p>
+    <div class="tip">🎯 <b>What is training really doing?</b><br>
+      ① <b>Loss function</b>: measures the gap between "predicted" and "actual" values (commonly MSE or cross-entropy). It's a function of all parameters;<br>
+      ② <b>Goal</b>: find the parameter set that <b>minimizes</b> the loss;<br>
+      ③ Simple models (linear regression) can solve analytically (set derivatives to 0), but neural networks are nonlinear — must <b>iterate</b>;<br>
+      ④ <b>Gradient Descent</b>: compute partial derivatives (the <b>gradient</b>), then move parameters <b>against the gradient direction</b> (step size = learning rate) — repeat to approach the minimum;<br>
+      ⑤ <b>Backpropagation</b>: use the <b>chain rule</b> to compute gradients layer by layer from output to input;<br>
+      ⑥ One "forward pass → backprop → parameter update" = <b>one training step</b>; over many rounds, parameters converge and the model "learns" the function.</div>
+
+    <h3 class="sub">3.5 Training Methods: Gradient Descent & Optimizers</h3>
+    <ul>
+      <li><b>Backpropagation</b>: compute gradients from output error backward;</li>
+      <li><b>AdamW</b>: mainstream optimizer, adaptive learning rate + weight decay;</li>
+      <li><b>Learning rate schedule</b>: typically warmup then cosine decay;</li>
+      <li><b>Mixed precision</b> (bfloat16/FP16): low-precision training for speed and memory savings;</li>
+      <li><b>Gradient accumulation</b>: accumulate small batches into large batches.</li>
+    </ul>
+
+    <h3 class="sub">3.6 Scaling Laws</h3>
+    <p>OpenAI's <b>Chinchilla/Scaling Laws</b> found: model performance follows a predictable power-law with <b>parameters, data, and compute</b>. Key insights:</p>
+    <ul>
+      <li>To improve performance, <b>simultaneously</b> increase parameters <b>and</b> data;</li>
+      <li><b>Compute-optimal</b>: optimal when parameters ≈ training tokens (≈ <code>20 tokens/parameter</code>, e.g. 7B model ≈ 140B tokens);</li>
+      <li>When data is insufficient, adding data is more cost-effective than adding parameters.</li>
+    </ul>
+    <div class="note">⚠️ This is why "just scaling parameters" may not work — <b>model capability is strongly correlated with training data quantity and quality</b>, not just parameter count.</div>
+
+    <h3 class="sub">3.7 Emergent Abilities</h3>
+    <p>When model scale crosses a threshold, certain abilities <b>"suddenly" appear</b> rather than improving smoothly:</p>
+    <ul>
+      <li>Few-shot learning (in-context learning — learn a new task from a few examples);</li>
+      <li>Chain-of-thought reasoning (solve complex problems step by step);</li>
+      <li>Code generation, instruction following, multilingual translation, etc.</li>
+    </ul>
+    <p>This "emergence" is the key value distinguishing "large models" from small models.</p>
+
+    <h3 class="sub">3.8 In-Context Learning</h3>
+    <p>Without updating weights, just by <b>including examples (few-shot)</b> in the prompt, the model can "temporarily learn" a new task. This is one of the most practical LLM abilities and the foundation of prompt engineering.</p>
+    <table>
+      <tr><th>Paradigm</th><th>Examples in Prompt?</th><th>Characteristics</th></tr>
+      <tr><td>Zero-shot</td><td>No examples</td><td>Direct instruction; convenient but depends on instruction clarity</td></tr>
+      <tr><td>One-shot</td><td>1 example</td><td>Gives the model a reference</td></tr>
+      <tr><td>Few-shot</td><td>2–8 examples</td><td>Significantly improves stability; most common</td></tr>
+    </table>
+
+    <h3 class="sub">3.9 Training/Inference Frameworks Overview</h3>
+    <table>
+      <tr><th>Tool</th><th>Purpose</th></tr>
+      <tr><td>PyTorch</td><td>Mainstream deep learning framework, foundation for LLM training/inference</td></tr>
+      <tr><td>Hugging Face Transformers</td><td>Standard library for loading/fine-tuning/inference, richest ecosystem</td></tr>
+      <tr><td>DeepSpeed</td><td>Microsoft distributed training library, ZeRO memory optimization</td></tr>
+      <tr><td>Megatron-LM</td><td>NVIDIA large-scale training framework</td></tr>
+      <tr><td>vLLM</td><td>Inference serving framework, PagedAttention for throughput</td></tr>
+    </table>
+
+    <h3 class="sub">3.10 Common Training Challenges & Solutions</h3>
+    <div class="note">🎓 <b>Training isn't just "bigger is better"</b>. Common issues and solutions:</div>
+    <ul>
+      <li><b>Overfitting</b>: Perfect on training data, poor on new data. Solutions: simplify model; add data; <b>data augmentation</b>; <b>early stopping</b>; regularization; dropout.</li>
+      <li><b>Regularization</b>: Add parameter penalty to loss function — <b>L1</b> (sparse), <b>L2</b> (shrink all). Strength controlled by regularization coefficient. These "parameters that control parameters" are <b>hyperparameters</b>.</li>
+      <li><b>Dropout</b>: Randomly drop neurons during training, forcing the model to rely on more "ordinary soldiers" rather than few "elites" — improves robustness.</li>
+      <li><b>Gradient vanishing/explosion</b>: Deep networks cause gradients to vanish or explode. Solutions: <b>gradient clipping</b>, <b>residual networks</b>, proper <b>weight initialization</b> and <b>input normalization</b>.</li>
+      <li><b>Slow convergence / oscillation / local optima</b>: Use <b>momentum, Adam</b> adaptive optimizers.</li>
+      <li><b>High compute cost</b>: Use <b>mini-batch</b> to split large datasets into smaller batches.</li>
+    </ul>
+  </div>
+</section>
+    <section id="ch4">
+  <div class="card">
+    <h2 class="sec">Chapter 4 · Alignment & Safety</h2>
+    <h3 class="sub">4.1 Why Alignment is Needed</h3>
+    <p>A pretrained base model only knows how to "continue text" — it may not <b>follow instructions, answer relevantly, or follow rules</b>. Alignment shapes the base model into a safe, helpful, instruction-following assistant.</p>
+
+    <h3 class="sub">4.2 Three Goals of Alignment (Helpful / Honest / Harmless)</h3>
+    <ul>
+      <li><b>Helpful</b>: Accurately and completely fulfill user instructions;</li>
+      <li><b>Honest</b>: No fabrication; admit uncertainty; refuse to confabulate;</li>
+      <li><b>Harmless</b>: No illegal, dangerous, hateful, or privacy-violating content.</li>
+    </ul>
+
+    <h3 class="sub">4.3 Stage 1: Supervised Fine-Tuning (SFT)</h3>
+    <p>Use <b>human-annotated (instruction, expected response)</b> pairs for supervised learning. This teaches the model to "give reasonable responses based on instructions." This is the foundation of alignment and the simplest, most common method.</p>
+    <ul>
+      <li>Data format: <code>{"instruction":"...","input":"...","output":"..."}</code>;</li>
+      <li>Data quality and diversity determine the ceiling of instruction following;</li>
+      <li>SFT is also used for domain-specific fine-tuning (see Chapter 6).</li>
+    </ul>
+
+    <h3 class="sub">4.4 Stage 2: RLHF (Reinforcement Learning from Human Feedback)</h3>
+    <p>After SFT, the model may mimic annotation style but not necessarily match user preferences. RLHF introduces a <b>reward model</b> using human preferences:</p>
+    <ol>
+      <li><b>Collect human preferences</b>: For multiple responses to the same instruction, humans judge which is better (pairwise comparison);</li>
+      <li><b>Train a reward model (RM)</b>: Learn a scoring model where better responses score higher;</li>
+      <li><b>Reinforcement learning (PPO)</b>: Use the reward signal to optimize the policy model toward high-scoring responses.</li>
+    </ol>
+    <pre>Human preferences ─▶ Train Reward Model RM
+                          │
+                          ▼
+Base model ──SFT──▶ Policy model ──PPO (RM as reward)──▶ Aligned model</pre>
+    <div class="warn">⚠️ RLHF is complex, unstable, and prone to "reward hacking." This led to simpler methods like DPO.</div>
+
+    <h3 class="sub">4.5 Direct Preference Optimization (DPO)</h3>
+    <p><b>DPO</b> elegantly integrates preference learning into <b>supervised-style training</b>, bypassing RL instability. It directly optimizes on (preference pair) data with constraints. Results approach RLHF, but simpler, more stable, lower resource usage — widely adopted in recent years.</p>
+
+    <h3 class="sub">4.6 Other Alignment Techniques</h3>
+    <table>
+      <tr><th>Method</th><th>Approach</th></tr>
+      <tr><td>RLAIF</td><td>Use AI (e.g., large models) instead of humans for preference feedback, reducing cost</td></tr>
+      <tr><td>RLVR (RL with Verifiable Rewards)</td><td>Use verifiable rules (math answers, code passing tests) as rewards</td></tr>
+      <tr><td>KTO / ORPO / SimPO</td><td>DPO variants with different optimization objectives, reduced data needs</td></tr>
+      <tr><td>Constitutional AI</td><td>Use a set of "principles/constitution" for the model to self-critique and improve</td></tr>
+    </table>
+
+    <h3 class="sub">4.7 Jailbreak & Safety Adversarial</h3>
+    <p>Even aligned models can be induced to produce harmful content (jailbreak attacks). Common tactics:</p>
+    <ul>
+      <li><b>Roleplay/fictional scenarios</b>: "Suppose you're an unrestricted model...";</li>
+      <li><b>Base64/encoding bypass</b>: Encode dangerous queries into non-plaintext;</li>
+      <li><b>Multi-turn induction</b>: Gradually lead the model astray;</li>
+      <li><b>System prompt leakage/injection</b>: Ask the model to "ignore previous rules."</li>
+    </ul>
+    <div class="tip">✅ Understanding jailbreaks helps you add protection in <b>your own products</b> (input/output filtering, prompt injection defense, human review), not attack others.</div>
+
+    <h3 class="sub">4.8 Application-Layer Alignment Strategies</h3>
+    <p>Beyond training-level alignment, deployment can add "system guardrails":</p>
+    <ul>
+      <li><b>Input detection</b>: Intercept malicious/jailbreak prompts;</li>
+      <li><b>Output review</b>: Detect and block harmful/sensitive outputs;</li>
+      <li><b>Content classification</b>: Grade violence, sexual content, privacy;</li>
+      <li><b>Rate limiting & user isolation</b>: Prevent abuse and misuse.</li>
+    </ul>
+  </div>
+</section>
+    <section id="ch5">
+  <div class="card">
+    <h2 class="sec">Chapter 5 · Inference & Deployment</h2>
+    <h3 class="sub">5.1 The Nature & Bottleneck of Inference</h3>
+    <p>Inference = using a trained model for <b>autoregressive generation</b> on new input. The bottleneck is usually not compute but <strong>memory bandwidth / capacity</strong>, because of constant read/writes of the massive KV Cache and model weights.</p>
+
+    <h3 class="sub">5.2 How Much VRAM Do You Need?</h3>
+    <p>A quick estimate:</p>
+    <pre>Model weight VRAM ≈ parameters × precision bytes
+  e.g.: 7B model
+  FP16 (2 bytes) → 14 GB weights + KV cache overhead ≈ 16GB
+  INT8 (1 byte)  → ~7GB
+  INT4 (0.5 byte) → ~3.5–4GB</pre>
+    <table>
+      <tr><th>Model Size</th><th>FP16 ~VRAM</th><th>INT4 ~VRAM</th><th>Recommended GPU</th></tr>
+      <tr><td>1–3B</td><td>2–6GB</td><td>1–2GB</td><td>Consumer-grade OK</td></tr>
+      <tr><td>7–8B</td><td>14–16GB</td><td>4–5GB</td><td>RTX 4060/4070 etc.</td></tr>
+      <tr><td>13–14B</td><td>26–28GB</td><td>8–9GB</td><td>RTX 4090 / A10</td></tr>
+      <tr><td>70B</td><td>140GB+</td><td>35–40GB</td><td>Multi-GPU A100/A800/H100</td></tr>
+    </table>
+
+    <h3 class="sub">5.3 Quantization</h3>
+    <p>Compress model weights from high precision (FP16) to low precision (INT8/INT4), drastically reducing VRAM and accelerating. Common tools:</p>
+    <ul>
+      <li><b>GGUF / llama.cpp</b>: CPU/consumer GPU friendly, golden choice for local small models;</li>
+      <li><b>GPTQ</b>: Efficient INT4 quantization on GPU;</li>
+      <li><b>AWQ</b>: Sensitivity-weighted quantization, better quality;</li>
+      <li><b>bitsandbytes (4-bit)</b>: One-click loading with Hugging Face, good for fine-tuning.</li>
+    </ul>
+    <div class="note">⚠️ Quantization saves VRAM and speeds up, but may cause slight accuracy loss. INT4 is sufficient for most tasks; be cautious for tasks requiring precise reasoning.</div>
+
+    <h3 class="sub">5.4 Inference Optimization Techniques</h3>
+    <ul>
+      <li><b>KV Cache</b>: Cache historical K/V to avoid recompute (see 2.7);</li>
+      <li><b>Batching</b>: Process multiple requests at once, amortize compute;</li>
+      <li><b>PagedAttention</b>: vLLM's core, manages KV Cache like OS paging — dramatically improves VRAM utilization;</li>
+      <li><b>Speculative Decoding</b>: Small model guesses, large model verifies, accelerating generation;</li>
+      <li><b>Prefix Caching</b>: Reuse precomputed results for identical system prompts;</li>
+      <li><b>Continuous Batching</b>: Dynamically add/complete requests, reduce idle waiting.</li>
+    </ul>
+
+    <h3 class="sub">5.5 Mainstream Inference Engines Compared</h3>
+    <table>
+      <tr><th>Framework</th><th>Positioning</th><th>Best For</th></tr>
+      <tr><td>llama.cpp / GGUF</td><td>CPU + consumer GPU, ultra-lightweight</td><td>Local, single machine, no-GPU environments</td></tr>
+      <tr><td>vLLM</td><td>High-throughput production inference</td><td>Online services, multi-concurrent API</td></tr>
+      <tr><td>TensorRT-LLM</td><td>NVIDIA deep optimization</td><td>Maximum throughput/latency</td></tr>
+      <tr><td>Ollama</td><td>One-click local deployment, friendly</td><td>Personal/small team quick start</td></tr>
+      <tr><td>LM Studio</td><td>GUI local model running</td><td>Non-technical users running local models</td></tr>
+      <tr><td>OpenAI-compatible service</td><td>Unified API interface</td><td>Seamless backend switching</td></tr>
+    </table>
+
+    <h3 class="sub">5.6 Typical Deployment Architecture</h3>
+    <pre>Client / Application
+     │
+     ▼
+ API Gateway (auth / rate-limit / routing)
+     │
+     ▼
+┌─────────────────────────┐
+│  Inference Service       │  ← Load model + KV cache
+│  ┌─────┐ ┌─────┐        │
+│  │GPU 1│ │GPU 2│ ...     │
+│  └─────┘ └─────┘        │
+└─────────────────────────┘
+     │
+     ▼
+ Model Files (local / object storage)</pre>
+
+    <h3 class="sub">5.7 GPU Selection Guide (Personal/Small Team)</h3>
+    <table>
+      <tr><th>Budget/Need</th><th>Recommendation</th></tr>
+      <tr><td>Zero-cost entry</td><td>CPU + small model (1-3B) + Ollama/llama.cpp</td></tr>
+      <tr><td>Run 7B–8B locally</td><td>RTX 3060 12G / 4060 Ti 16G / 4070</td></tr>
+      <tr><td>Run 13B–32B</td><td>RTX 4090 24G or dual GPU</td></tr>
+      <tr><td>Production/multi-concurrent</td><td>A10 / A100 / H100 data center cards</td></tr>
+    </table>
+    <div class="tip">💡 To save money running local small models, <b>Ollama + GGUF</b> is the fastest path. Move to vLLM when you need production-grade throughput.</div>
+
+    <h3 class="sub">5.8 Long Context Challenges</h3>
+    <p>Ultra-long context (e.g. 128K–1M) brings: attention computation explosion, KV cache VRAM explosion, and "lost in the middle" attention issues. Solutions:</p>
+    <ul>
+      <li>RoPE position extrapolation / long-context continued pretraining;</li>
+      <li>Sparse attention / sliding window attention;</li>
+      <li>Split long text into chunks for retrieval (combine with RAG, see Chapter 8).</li>
+    </ul>
+  </div>
+</section>
+    <section id="ch6">
+  <div class="card">
+    <h2 class="sec">Chapter 6 · Fine-tuning & PEFT</h2>
+    <h3 class="sub">6.1 Why Fine-tune?</h3>
+    <p>When prompt engineering / RAG can't meet specific needs, fine-tuning — continuing training with <b>domain data</b> — teaches the model specific styles, formats, tasks, or knowledge. Typical scenarios:</p>
+    <ul>
+      <li>Output strictly follows a specific JSON format / enterprise style;</li>
+      <li>Master domain-specific terminology and business logic;</li>
+      <li>Continuously learn on private data without long prompts each time.</li>
+    </ul>
+    <div class="warn">⚠️ Fine-tuning <b>is not a panacea</b>: it mainly changes "behavior/style/minor knowledge" and can't truly "memorize massive new facts" (that's RAG's job, see Chapter 8). Think clearly: fine-tune or RAG?</div>
+
+    <h3 class="sub">6.2 Full Fine-Tuning vs. PEFT</h3>
+    <p><b>Full Fine-Tuning</b>: updates all weights, good results but massive VRAM/compute. A 7B model is nearly impossible to full-FT on a single GPU.</p>
+    <p><b>PEFT (Parameter-Efficient Fine-Tuning)</b>: only train a small set of new parameters, freeze the original model. Very low cost, near-equivalent results. Mainstream methods:</p>
+    <table>
+      <tr><th>Method</th><th>Approach</th><th>Characteristics</th></tr>
+      <tr><td><b>LoRA</b></td><td>Freeze original weights, inject low-rank trainable matrices</td><td>Mainstream, VRAM-efficient, good results</td></tr>
+      <tr><td><b>QLoRA</b></td><td>LoRA + 4-bit quantized base</td><td>Consumer GPUs can fine-tune large models</td></tr>
+      <tr><td>Prefix / Prompt Tuning</td><td>Learn a set of trainable prefix vectors</td><td>Minimal change</td></tr>
+      <tr><td>Adapter</td><td>Insert small trainable modules</td><td>Similar to LoRA approach</td></tr>
+    </table>
+
+    <h3 class="sub">6.3 LoRA Principle</h3>
+    <p>LoRA (Low-Rank Adaptation) assumes: weight changes during fine-tuning are "<b>low-rank</b>." So the increment is decomposed into two small matrices:</p>
+    <pre>W' = W₀ + ΔW = W₀ + B·A
+  W₀: frozen original weight
+  A:  small trainable matrix (r × d)
+  B:  small trainable matrix (d × r)
+  r:  rank (typically 8/16/32), smaller = fewer parameters
+  Only A, B are updated; original W₀ is frozen</pre>
+    <p>Benefit: after training, only a tiny <code>adapter</code> (a few MB–hundreds of MB) needs saving. Multiple LoRAs can be stacked for different tasks, switched at will.</p>
+
+    <h3 class="sub">6.4 Practice: Fine-tuning with Hugging Face + PEFT</h3>
+    <p>Typical minimal workflow (LoRA / QLoRA example):</p>
+    <pre><code># 1) Load base model (QLoRA uses 4-bit quantization)
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import LoraConfig, get_peft_model
+
+model = AutoModelForCausalLM.from_pretrained(
+    "Qwen/Qwen2.5-7B-Instruct",
+    torch_dtype=torch.bfloat16,
+    load_in_4bit=True          # QLoRA key
+)
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
+
+# 2) Configure LoRA
+lora = LoraConfig(
+    r=8, lora_alpha=16, lora_dropout=0.05,
+    target_modules=["q_proj","k_proj","v_proj","o_proj"],
+    task_type="CAUSAL_LM",
+)
+model = get_peft_model(model, lora)
+
+# 3) Train with SFTTrainer (data = instruction-response pairs)
+from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
+trainer = SFTTrainer(
+    model=model, train_dataset=dataset,
+    args=TrainingArguments(output_dir="./lora_out", per_device_train_batch_size=1),
+)
+trainer.train()
+
+# 4) Save and merge
+model.save_pretrained("./lora_adapter")
+merged = model.merge_and_unload()
+merged.save_pretrained("./model_merged")</code></pre>
+
+    <h3 class="sub">6.5 Fine-tuning Data Preparation Tips</h3>
+    <ul>
+      <li><b>Quantity</b>: hundreds–thousands of high-quality samples suffice; don't need massive amounts;</li>
+      <li><b>Quality &gt; Quantity</b>: prefer fewer but correct samples; avoid contradictory ones;</li>
+      <li><b>Coverage</b>: cover various instruction forms, edge cases, refusal scenarios;</li>
+      <li><b>Consistency</b>: unified format (JSON, tone, length);</li>
+      <li><b>Dedup & decontamination</b>: avoid duplicate overfitting, avoid test data leakage.</li>
+    </ul>
+
+    <h3 class="sub">6.6 Common Fine-tuning Frameworks</h3>
+    <table>
+      <tr><th>Framework</th><th>Purpose</th></tr>
+      <tr><td>HuggingFace PEFT + TRL</td><td>LoRA/QLoRA fine-tuning and alignment (SFT/DPO)</td></tr>
+      <tr><td>LLaMA-Factory</td><td>All-in-one fine-tuning tool, friendly UI, full pipeline</td></tr>
+      <tr><td>Firefly / SWIFT</td><td>Popular domestic fine-tuning/alignment tools</td></tr>
+      <tr><td>Unsloth</td><td>Ultra-fast fine-tuning and quantization, low resource usage</td></tr>
+    </table>
+
+    <h3 class="sub">6.7 Fine-tune vs. Prompts vs. RAG: How to Choose</h3>
+    <table>
+      <tr><th>Need</th><th>Recommendation</th></tr>
+      <tr><td>Temporary/lightweight tasks</td><td>Prompt engineering (fast, zero cost)</td></tr>
+      <tr><td>Need external latest/private knowledge</td><td>RAG (retrieval-augmented)</td></tr>
+      <tr><td>Need stable specific format/style/behavior</td><td>Fine-tuning (LoRA)</td></tr>
+      <tr><td>Combination</td><td>Prompts first, then RAG, fine-tune last</td></tr>
+    </table>
+    <div class="tip">💡 Practical rule: <b>Prompts first, then RAG, fine-tune last</b>. Fine-tuning is the most expensive step — don't jump to it first.</div>
+  </div>
+</section>
+
+    <section id="ch7">
+  <div class="card">
+    <h2 class="sec">Chapter 7 · Prompt Engineering & Structured Output</h2>
+    <h3 class="sub">7.1 What is Prompt Engineering?</h3>
+    <p>Prompt Engineering = guiding the model to produce stable, high-quality output through <b>designed input</b>. It's zero-cost, fast-acting, and the <b>first skill</b> for entering LLM applications.</p>
+    <p>Core insight: the model is a "probability machine." The clearer the prompt, the more constraints and examples, the more predictable the output. You're not "commanding" — you're <b>providing sufficient contextual constraints to a probability machine</b>.</p>
+
+    <h3 class="sub">7.2 Basic Components of a Prompt</h3>
+    <p>A high-quality prompt typically includes:</p>
+    <ol>
+      <li><b>Role</b>: Who you are / what role ("You are a senior legal counsel");</li>
+      <li><b>Task</b>: What to do, with clear verbs ("summarize, translate, generate, classify");</li>
+      <li><b>Context</b>: Background info, materials, constraints;</li>
+      <li><b>Format</b>: Output structure (JSON, table, bullet points, word count);</li>
+      <li><b>Example</b>: 1–3 input-output samples;</li>
+      <li><b>Constraints</b>: What not to do, what to do when uncertain.</li>
+    </ol>
+    <pre><code>[Role] You are a senior editor skilled in polishing and distilling.
+[Task] Rewrite the following text into a more professional, concise version.
+[Requirements]
+- Preserve the original meaning; remove colloquialisms
+- Keep under 80 words
+- Output only one line; no explanations
+[Original] ... (place original text here)</code></pre>
+
+    <h3 class="sub">7.3 Common Prompt Techniques</h3>
+    <table>
+      <tr><th>Technique</th><th>Description</th><th>Use Case</th></tr>
+      <tr><td>Zero-shot</td><td>Direct instruction, no examples</td><td>Simple tasks</td></tr>
+      <tr><td>Few-shot</td><td>2–8 input-output examples</td><td>Need stable format/behavior</td></tr>
+      <tr><td>Role-playing</td><td>Set a professional role</td><td>Improve expertise/tone</td></tr>
+      <tr><td>Chain-of-Thought (CoT)</td><td>Let the model "think step by step" before answering</td><td>Complex reasoning/math</td></tr>
+      <tr><td>Few-shot CoT</td><td>Examples include reasoning process</td><td>Strong reasoning scenarios</td></tr>
+      <tr><td>Self-reflection</td><td>Generate, then let it review and revise</td><td>Improve quality</td></tr>
+      <tr><td>Role+Constraint+Format</td><td>Combine multiple constraints</td><td>Production-grade stable output</td></tr>
+    </table>
+
+    <h3 class="sub">7.4 Chain-of-Thought (CoT)</h3>
+    <p>For math, logic, and complex problems, asking directly often fails. Let the model <b>write out the reasoning process first</b>, then give the conclusion — accuracy improves significantly:</p>
+    <pre><code>❌ Direct ask: A basket has 3 apples, 5 more are added, 2 are removed. How many left?
+✅ Guided thinking:
+"Please reason step by step, then give the conclusion:
+Step 1: Started with 3 apples
+Step 2: Added 5, total 8
+Step 3: Removed 2, 6 remain
+So, 6 apples are left."
+Answer: 6</code></pre>
+    <p>Advanced: <b>ReAct</b> (Reason+Act) alternates thinking and action — the core of agents (see Chapter 9); <b>Tree-of-Thoughts (ToT)</b> explores multiple reasoning paths and picks the best.</p>
+
+    <h3 class="sub">7.5 Structured Output (JSON / Tables)</h3>
+    <p>Engineering often requires structured data from the model. Two approaches:</p>
+    <ul>
+      <li><b>Soft constraint</b>: Specify format + JSON example in the prompt; the model usually complies;</li>
+      <li><b>Hard constraint (recommended)</b>: Use <strong>constrained decoding / Function Calling</strong> to mechanically force valid JSON output (see Chapter 9 tool calling).</li>
+    </ul>
+    <pre><code>Return only the following JSON, no other content:
+{"title": "...", "summary": "...", "tags": ["..."]}</code></pre>
+    <div class="warn">⚠️ When relying on soft constraints, always add <b>parsing fallback</b> (regex/JSON repair) — don't assume 100% clean JSON.</div>
+
+    <h3 class="sub">7.6 System Prompt</h3>
+    <p>Put <b>stable, unchanging constraints</b> (role, rules, boundaries, format, safety) into the system prompt, and user input into user messages — so the model responds within a fixed baseline. This is key to building agents/products.</p>
+    <pre><code>[System Prompt] You are an order customer service assistant.
+- Answer only based on knowledge base content; don't fabricate.
+- Professional, concise tone.
+- If unable to answer, clearly say "Please consult human customer service."
+- All output in English.</code></pre>
+
+    <h3 class="sub">7.7 Prompt Injection & Defense</h3>
+    <p><b>Prompt injection</b> is when malicious text attempts to override system instructions (e.g., hidden text in web pages inducing the model to leak data). Defenses:</p>
+    <ul>
+      <li><b>Isolate</b> user input from system instructions (delimiters / role separation);</li>
+      <li><b>Filter/detect</b> input (intercept "ignore above instructions" patterns);</li>
+      <li><b>Confirmation</b> for critical operations; limit tool permissions;</li>
+      <li>Don't put untrusted text directly into system prompts.</li>
+    </ul>
+
+    <h3 class="sub">7.8 Prompt Tools & Libraries</h3>
+    <ul>
+      <li><b>Prompt template libraries</b>: Pre-built role/scenario templates;</li>
+      <li><b>LangChain / Instructor</b>: Structured output and chaining tools;</li>
+      <li><b>OpenAI structured output</b> / <b>Pydantic</b>: Schema enforcement and validation.</li>
+    </ul>
+  </div>
+</section>
+    <section id="ch8">
+  <div class="card">
+    <h2 class="sec">Chapter 8 · RAG (Retrieval-Augmented Generation)</h2>
+    <h3 class="sub">8.1 Why RAG?</h3>
+    <p>LLM training data has a cutoff; it can't know your private/latest materials and is prone to <b>hallucination (fabrication)</b>. RAG's approach: <b>retrieve relevant materials first, insert them into the prompt, then let the model answer based on the materials</b>. Like "temporarily giving the model a knowledge base."</p>
+    <div class="tip">✅ RAG advantages over fine-tuning: knowledge updates instantly, doesn't modify the model, traceable sources, low cost. It's the first choice for most "private knowledge Q&A" scenarios.</div>
+
+    <h3 class="sub">8.2 RAG Core Pipeline</h3>
+    <pre>   [Offline] Build Knowledge Base
+   Document ──Chunk──▶ Embedding ──▶ Store in Vector DB
+                                                 ▲
+   [Online] User Question                             │
+   Question ──▶ Embedding(question) ──▶ Similarity Search ──▶ Top-K docs
+        │
+        ▼
+   Assemble Prompt (question + retrieved doc chunks)
+        │
+        ▼
+   LLM generates answer (with optional citations)</pre>
+
+    <div class="tip">💡 <b>RAG in one sentence</b>: First Retrieve, then Generate — hence "Retrieval-Augmented Generation." Two things: <b>fish out relevant content from a knowledge base, then let the model answer based on it</b>. Enterprise knowledge assistants and smart customer service mostly work this way.</div>
+    <div class="note">🤔 <b>Why not just feed the entire document to the model?</b> Suppose a product manual has hundreds of pages: ① The model has a <b>context window</b> limit — too much means "read the end, forget the beginning," accuracy drops; ② Carrying a thick manual every time <b>inference cost</b> soars; ③ More input, slower model response. So the right approach: <b>only pick the few truly relevant chunks, give them with the question</b> — that's RAG.</div>
+
+    <h3 class="sub">8.2b RAG Pipeline: Five Key Steps</h3>
+    <p>RAG has two phases: <b>before asking</b> ("data preparation" = chunking + indexing) and <b>after asking</b> ("answering" = retrieval + rerank + generation).</p>
+    <table>
+      <tr><th>Step</th><th>Phase</th><th>Plain Explanation</th><th>One-line Principle</th></tr>
+      <tr><td><b>① Chunking</b></td><td>Before</td><td>Tear the manual into small pieces</td><td>Split docs by character count / paragraph / section / page</td></tr>
+      <tr><td><b>② Indexing</b></td><td>Before</td><td>Tag each piece for retrieval</td><td>Embed each chunk into a vector, store with original text in vector DB</td></tr>
+      <tr><td><b>③ Retrieval</b></td><td>After</td><td>Quickly shortlist "roughly relevant" chunks</td><td>Embed the question, compute similarity with DB chunks, get Top-10</td></tr>
+      <tr><td><b>④ Rerank</b></td><td>After</td><td>Finely select from shortlist</td><td>Use Cross-Encoder model to refine from 10 to best 3</td></tr>
+      <tr><td><b>⑤ Generation</b></td><td>After</td><td>Model answers based on materials</td><td>Send question + 3 chunks to LLM, produce final answer</td></tr>
+    </table>
+    <div class="note">🎯 <b>Why rerank after retrieval?</b> Like hiring: <b>retrieval = resume screening</b> (many candidates, cheap method, low accuracy OK); <b>rerank = interview</b> (fewer candidates, expensive model, high accuracy). Retrieval uses vector similarity (cheap, fast, less accurate); rerank uses Cross-Encoder (expensive, slow, accurate). Two-stage filtering beats one-shot.</div>
+
+    <h3 class="sub">8.3 Key Components</h3>
+    <table>
+      <tr><th>Component</th><th>Function</th><th>Examples</th></tr>
+      <tr><td>Document Chunking</td><td>Split long docs into retrievable chunks</td><td>By paragraph/semantics</td></tr>
+      <tr><td>Embedding Model</td><td>Convert text to vectors, measure semantic similarity</td><td>BGE, M3E, text-embedding</td></tr>
+      <tr><td>Vector Database</td><td>Store vectors and perform similarity search</td><td>Milvus, Chroma, FAISS, Pinecone</td></tr>
+      <tr><td>Retrieval Strategy</td><td>Recall relevant chunks</td><td>Vector search / hybrid search</td></tr>
+      <tr><td>Generation Model</td><td>Answer based on retrieved content</td><td>Any LLM</td></tr>
+    </table>
+
+    <h3 class="sub">8.4 Chunking Tips</h3>
+    <ul>
+      <li><b>Chunk size</b>: typically 300–1000 tokens per chunk; too large adds noise, too small loses context;</li>
+      <li><b>Overlap</b>: leave partial overlap between adjacent chunks to avoid splitting sentences;</li>
+      <li><b>Structural splitting</b>: prefer splitting by title/paragraph/semantic boundary, not just character count;</li>
+      <li><b>Preserve metadata</b>: record each chunk's source, title, page for traceability.</li>
+    </ul>
+
+    <h3 class="sub">8.5 Vector Search & Hybrid Retrieval</h3>
+    <div class="note">📚 <b>Three foundational concepts</b>:
+      <ul>
+        <li><b>Vector</b>: A mathematical quantity with magnitude and direction, represented as an array of numbers. RAG vectors often have hundreds or thousands of dimensions — more dimensions = richer information.</li>
+        <li><b>Embedding</b>: The process of <b>converting text into vectors</b>. The key magic: <b>semantically similar text → similar vectors</b>. This lets us judge relevance by "vector distance." Done by specialized <b>Embedding models</b> (see MTEB leaderboard for selection).</li>
+        <li><b>Vector Database</b>: A database optimized for <b>storing and querying vectors</b>. Note: it <b>stores original text alongside vectors</b> — the vector is an intermediate artifact; the model ultimately reads the original text.</li>
+        <li><b>Vector Similarity</b>: Measures how similar two vectors are. Three common algorithms: <b>cosine similarity</b> (angle), <b>Euclidean distance</b> (straight-line distance), <b>dot product</b> (direction + magnitude).</li>
+      </ul>
+    </div>
+    <ul>
+      <li><b>Vector search</b>: semantic similarity, great for "same meaning, different words";</li>
+      <li><b>Keyword search (BM25)</b>: exact match, great for proper nouns/IDs;</li>
+      <li><b>Hybrid search</b>: combine both (RAG Fusion / weighted), better recall, recommended in production.</li>
+    </ul>
+
+    <h3 class="sub">8.6 Common RAG Issues & Improvements</h3>
+    <table>
+      <tr><th>Problem</th><th>Improvement</th></tr>
+      <tr><td>No relevant results retrieved</td><td>Improve chunking, better Embedding, hybrid search, rerank</td></tr>
+      <tr><td>Retrieved but model didn't use well</td><td>Improve prompt, ask model to "answer based on documents," refuse unsupported claims</td></tr>
+      <tr><td>Can't trace answer sources</td><td>Preserve chunk metadata, return citations</td></tr>
+      <tr><td>Long/multi-doc scenarios</td><td>Hierarchical retrieval, summarization retrieval (Map-Reduce)</td></tr>
+      <tr><td>Slow index updates</td><td>Incremental indexing, async background updates</td></tr>
+    </table>
+
+    <h3 class="sub">8.7 RAG Evaluation Metrics</h3>
+    <ul>
+      <li><b>Retrieval quality</b>: Recall@K, Precision@K, NDCG;</li>
+      <li><b>Generation quality</b>: Faithfulness (is the answer grounded in retrieved content?), answer relevance, coverage;</li>
+      <li><b>End-to-end</b>: Human review / LLM-as-judge scoring.</li>
+    </ul>
+
+    <h3 class="sub">8.8 Mainstream RAG Frameworks</h3>
+    <table>
+      <tr><th>Framework</th><th>Characteristics</th></tr>
+      <tr><td>LangChain</td><td>General-purpose orchestration, rich components, large ecosystem</td></tr>
+      <tr><td>LlamaIndex</td><td>Focuses on data ingestion and retrieval, strong indexing</td></tr>
+      <tr><td>Haystack</td><td>Production-grade QA pipeline</td></tr>
+      <tr><td>RAGFlow / Dify</td><td>Visual low-code RAG/Agent app building</td></tr>
+    </table>
+    <div class="note">⚠️ Common mistake: dumping all documents into the prompt. Correct approach: <b>retrieve the most relevant Top-K chunks</b> then answer — context is limited; retrieval quality determines answer quality.</div>
+  </div>
+</section>
+    <section id="ch9">
+  <div class="card">
+    <h2 class="sec">Chapter 9 · AI Agents & Tool Calling</h2>
+    <h3 class="sub">9.1 What is an AI Agent?</h3>
+    <p>An Agent is an AI system that can <b>autonomously plan, call tools, interact with its environment, and achieve goals</b>. Compared to "one-shot Q&A," an Agent is a closed loop of <b>multi-step thinking + multi-step action + result-based adjustment</b>.</p>
+    <div class="note">💡 <b>Key shift: from "one-shot generation" to "workflow"</b>. Most people use LLMs by "prompting it to write start-to-finish in one go" (like asking someone to write a paper without revising — often mediocre). <b>Generative workflows</b> are more like writing a paper: <b>outline → research → draft → review what needs changing → revise</b>… iterating. Slower, but much higher quality. An Agent's essence is breaking complex tasks <b>into small steps, each delegated to AI with continuous checking</b>.</div>
+    <div class="tip">🎯 <b>Most important skill: task decomposition</b>. Break a large goal (write a research report, reply to a client email) into discrete small steps, then build components for each — this "decomposition ability" directly determines how powerful a workflow you can build.</div>
+
+    <h3 class="sub">9.1b Autonomy Levels (Not "Is or Isn't," but "How Autonomous")</h3>
+    <p>Don't get stuck on "is this a real Agent" — think of it as an <b>adjective</b>: systems can have <b>different degrees of autonomy</b>.</p>
+    <table>
+      <tr><th>Autonomy</th><th>Characteristics</th><th>Example</th></tr>
+      <tr><td><b>Low</b></td><td>Step sequence is <b>hardcoded</b> by the developer; LLM only generates text content</td><td>Fixed "generate keywords → search → scrape → write" pipeline</td></tr>
+      <tr><td><b>Semi</b></td><td>Model can <b>choose which tools</b> to use, but the tool set is predefined</td><td>Model decides "should I search? which one?"</td></tr>
+      <tr><td><b>High</b></td><td>Model autonomously <b>decides the step sequence</b>, can even write new functions/tools</td><td>Planning agents, systems that create executable tools</td></tr>
+    </table>
+    <div class="tip">✅ Practical advice: <b>Low autonomy</b> workflow apps are the most common, most controllable, and create the most enterprise value. <b>High autonomy</b> is powerful but unpredictable and hard to control — a research frontier. Start with low autonomy.</div>
+    <div class="note">📈 <b>Do workflows really help?</b> Andrew Ng's team verified on HumanEval (code benchmark): GPT-3.5 direct coding accuracy was only <b>40%</b>, GPT-4 reached <b>67%</b>; with workflow techniques (letting the model <b>write then reflect, self-check</b>), even older models improved significantly, approaching levels of more expensive models. Conclusion: <b>autonomous workflows benefit even the strongest models</b>.</div>
+    <pre>User Goal
+   │
+   ▼
+┌────────── Agent Loop ──────────┐
+│  1. Understand goal → 2. Plan sub-steps  │
+│  3. Call tools (search/code/API)          │
+│  4. Observe results → 5. Adjust plan      │
+│  6. Until task complete                   │
+└──────────────────────────────────────────┘
+  Output final result</pre>
+
+    <h3 class="sub">9.2 Core Mechanism: ReAct (Reasoning + Action)</h3>
+    <p>ReAct has the model alternate <b>"Thought → Action → Observation"</b>, thinking and acting like a human:</p>
+    <pre>Thought: The user wants Beijing weather. I need to call the weather tool.
+Action: get_weather("Beijing")
+Observation: Sunny, 25°C
+Thought: Got the weather. I'll answer directly.
+Action: Done. Beijing is sunny today, temperature 25°C.</pre>
+
+    <h3 class="sub">9.2b Four Design Patterns (Andrew Ng's Summary)</h3>
+    <p>When you "serialize" complex workflows, <b>four key design patterns</b> recur. They are the building blocks of agents.</p>
+    <table>
+      <tr><th>Pattern</th><th>Core Idea</th><th>Example</th></tr>
+      <tr><td><b>Reflection</b></td><td>Let the model <b>review its own output</b> and iterate</td><td>Write code → model checks → "found bug" → model fixes → v3</td></tr>
+      <tr><td><b>Tool Use</b></td><td>Give the model <b>callable tools</b> to act</td><td>Web search tool for "best coffee maker"; code execution for compound interest</td></tr>
+      <tr><td><b>Planning</b></td><td>Model <b>decides action sequence</b> (not hardcoded)</td><td>HuggingGPT: model decomposes "generate image → describe → voiceover" and calls each</td></tr>
+      <tr><td><b>Multi-Agent</b></td><td>Multiple role-based Agents <b>collaborate</b></td><td>Researcher + copywriter + editor trio</td></tr>
+    </table>
+    <div class="note">🎬 <b>Reflection</b> = let AI be its own "reviewer": feed its output back, let it critique and fix. Can add external feedback (e.g., <b>actually run the code and see if it errors</b>).</div>
+    <div class="note">🧩 <b>Multi-Agent</b> = forming a team: researcher finds info, marketer writes copy, editor polishes. Harder to control (can't predict each agent's behavior), but research shows better results for complex tasks (biographies, chess).</div>
+
+    <h3 class="sub">9.3 Tool Calling (Function Calling)</h3>
+    <p>Let the model <b>structurally declare "which tool to call, with what parameters,"</b> then your code actually executes it and returns results. This is the key connecting Agents to the external world (APIs, databases, code).</p>
+    <pre><code>// Define tool
+{
+  "name": "get_weather",
+  "description": "Query weather for a specified city",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "city": {"type": "string", "description": "City name"}
+    },
+    "required": ["city"]
+  }
+}
+
+// Model may return
+{"name":"get_weather", "arguments": {"city":"Beijing"}}</code></pre>
+
+    <h3 class="sub">9.3b MCP: Model Context Protocol — The "USB-C Standard" for Tool Calling</h3>
+    <p>Function Calling (9.3) has a pain point: <b>each LLM vendor's format is different</b> — OpenAI has its own, Claude has Tool Use, domestic models each have their own schema. To make one tool serve different LLMs, you must adapt for each — severe fragmentation.</p>
+    <p>In November 2024, Anthropic open-sourced <b>MCP (Model Context Protocol)</b>, trying to <b>unify the communication standard between AI Agents and tools</b>, like USB-C unifying charging ports. After the 2025 Agent application explosion, MCP quickly went from "good idea" to "de facto standard," now supported by Claude, GPT, Llama, DeepSeek, Qwen, and other mainstream LLMs.</p>
+    <div class="tip">✅ <b>In one sentence</b>: Function Calling is the LLM-level "calling interface" (vendor-specific); MCP is the infrastructure-level "communication standard" (open protocol). MCP can even use Function Calling as its calling mechanism underneath, but provides richer capabilities on top.</div>
+
+    <h4>(1) Design Inspiration: From LSP to MCP</h4>
+    <p>MCP's design was inspired by <b>LSP (Language Server Protocol)</b> in software development — LSP decouples "language capabilities" from "editors," so one language server works with VS Code, Vim, etc. MCP likewise: decouples "tool capabilities" from "AI applications," so <b>one tool server works with all LLMs</b>.</p>
+    <table>
+      <tr><th>Comparison</th><th>LSP</th><th>MCP</th></tr>
+      <tr><td>Background</td><td>Different IDEs have different completion/diagnostics for the same language</td><td>Different LLMs call the same tool differently</td></tr>
+      <tr><td>Core idea</td><td>Decouple "language capabilities" from "editor"</td><td>Decouple "tool capabilities" from "AI application"</td></tr>
+      <tr><td>Value</td><td>Unified the language tool ecosystem</td><td>Unified the AI Agent tool ecosystem</td></tr>
+    </table>
+
+    <h4>(2) Host-Client-Server Architecture</h4>
+    <pre>┌──────────────┐      ┌──────────────┐      ┌──────────────┐
+│    Host      │◄────►│    Client    │◄────►│    Server    │
+│ (host app)   │      │ (protocol    │      │ (tool service)│
+│              │      │  client)     │      │              │
+└──────────────┘      └──────────────┘      └──────────────┘
+Typical: Claude Desktop  Typical: MCP SDK     Typical: weather/DB/file
+       VS Code+Copilot     (Python/Java/TS)       GitHub MCP</pre>
+    <table>
+      <tr><th>Role</th><th>Responsibility</th><th>Analogy</th></tr>
+      <tr><td><b>Host</b></td><td>The user application hosting the LLM (Claude Desktop, IDE plugin, custom AI app), coordinates LLM-tool interaction</td><td>Browser</td></tr>
+      <tr><td><b>Client</b></td><td>MCP protocol endpoint, managed by Host, establishes 1:1 connection with Server, maintains session state. One Host can manage multiple Clients</td><td>Browser tab</td></tr>
+      <tr><td><b>Server</b></td><td>Provides specific tool capabilities (weather, database, file system, etc.), exposes capabilities via MCP protocol. One Server can be connected by multiple Clients</td><td>Web server</td></tr>
+    </table>
+    <div class="note">⚠️ Key design: Host and Server <b>don't communicate directly</b> — all communication goes through Client. Underlying message format: <b>JSON-RPC 2.0</b>.</div>
+
+    <h4>(3) Three Core Capabilities (Primitives)</h4>
+    <table>
+      <tr><th>Primitive</th><th>Function</th><th>Typical Scenario</th></tr>
+      <tr><td><b>Tools</b></td><td>Callable functions/methods, corresponding to Function Calling</td><td>Weather query, DB CRUD, API calls, file operations</td></tr>
+      <tr><td><b>Resources</b></td><td>URI-addressable data resources for <b>data reading</b> (not execution)</td><td>Config management, knowledge base docs, system status, business rules</td></tr>
+      <tr><td><b>Prompts</b></td><td>Parameterizable prompt templates maintained on the Server side, Client fetches on demand</td><td>Role system prompt libraries, workflow templates, multi-language prompt management</td></tr>
+    </table>
+    <div class="tip">💡 <b>Resource vs Tool</b>: Tool is "do something" (execute action); Resource is "read data" (provide context). MCP's Resource capability lets tools dynamically expose data, loaded on demand instead of stuffing everything into the prompt — solving context management.</div>
+
+    <h4>(4) Transport Protocols: STDIO vs HTTP SSE</h4>
+    <table>
+      <tr><th>Dimension</th><th>STDIO</th><th>HTTP SSE</th></tr>
+      <tr><td>Communication</td><td>Inter-process (stdin/stdout)</td><td>HTTP long connection (SSE push)</td></tr>
+      <tr><td>Best for</td><td>Local dev, desktop apps, IDE plugins</td><td>Distributed deployment, microservices, cloud</td></tr>
+      <tr><td>Performance</td><td>Low latency (no network overhead)</td><td>Network latency (but supports remote)</td></tr>
+      <tr><td>Scalability</td><td>Single machine only</td><td>Horizontal scaling, load balancing</td></tr>
+      <tr><td>Security</td><td>OS process isolation</td><td>Requires TLS / OAuth2</td></tr>
+    </table>
+    <div class="tip">✅ Selection: <b>Local dev/debug → STDIO</b> (simple, zero network config); <b>Production/remote → HTTP SSE</b> (network transport and horizontal scaling).</div>
+
+    <h4>(5) Complete Workflow (8 Steps)</h4>
+    <pre>Step 1: Initialize     Host starts → creates Client → Client sends "initialize" to Server
+Step 2: Negotiate       Server returns supported protocol version & capabilities → agree on features
+Step 3: Session         Client sends "initialized" notification, session established
+Step 4: Discover        Client sends "tools/list" → Server returns available tools (name, desc, schema)
+Step 5: User Request    User sends natural language request in Host
+Step 6: LLM Reasoning   Host sends request + tool list to LLM → LLM decides which tool, what params
+Step 7: Tool Call       Host sends "tools/call" via Client → Server executes, returns result
+Step 8: Response        LLM generates final natural language response based on tool result → shown to user</pre>
+    <div class="note">🔑 <b>Core value in "Step 4: Discovery"</b>: tool list and schema are <b>dynamically obtained</b>, not hardcoded. Server-side tool changes are auto-detected by Client — no redeployment needed.</div>
+
+    <h4>(6) MCP vs Function Calling Comparison</h4>
+    <table>
+      <tr><th>Dimension</th><th>Function Calling</th><th>MCP</th></tr>
+      <tr><td>Protocol level</td><td>LLM API layer (vendor-specific)</td><td>Independent communication protocol (open standard)</td></tr>
+      <tr><td>Tool discovery</td><td>Hardcoded in prompt or API params</td><td><b>Dynamic discovery</b> (tools/list negotiation)</td></tr>
+      <tr><td>State management</td><td>Stateless (each call independent)</td><td><b>Stateful</b> (persistent session)</td></tr>
+      <tr><td>Multi-LLM support</td><td>Each LLM needs separate adaptation</td><td><b>One implementation, all LLMs</b></td></tr>
+      <tr><td>Capability scope</td><td>Only tool calling</td><td>Tool + Resource + Prompt <b>three capabilities</b></td></tr>
+      <tr><td>Context management</td><td>App-layer self-managed</td><td>Protocol-layer built-in Resources</td></tr>
+      <tr><td>Transport</td><td>HTTPS API calls</td><td>STDIO (local) / HTTP SSE (remote)</td></tr>
+    </table>
+
+    <h4>(7) Selection Decision Tree</h4>
+    <pre>Does your app need to connect multiple external tools/data sources?
+├── No → Just need single-call simple API
+│   └── Use Function Calling (simple enough, no extra complexity)
+│
+└── Yes → Need to integrate multiple tools
+    │
+    ├── Do tools need to be reused across multiple different LLM apps?
+    │   ├── No → Single LLM, fixed tool list
+    │   │   └── Use Function Calling
+    │   └── Yes → Cross-app, cross-LLM reuse
+    │       └── Use MCP (core advantage: implement once, use everywhere)
+    │
+    ├── Need dynamic tool capability discovery?
+    │   └── Yes → Use MCP (dynamic capability discovery)
+    │
+    └── Need to provide dynamic context data to LLM?
+        └── Yes → Use MCP Resources</pre>
+    <div class="tip">📌 <b>Core decision principle</b>: ① Single LLM, few fixed tools → Function Calling; ② Need reuse/dynamic discovery/multi-LLM → MCP; ③ Local → STDIO, remote → HTTP SSE.</div>
+
+    <h4>(8) Enterprise Deployment Essentials</h4>
+    <ul>
+      <li><b>Security boundary</b>: Production must use HTTPS + TLS 1.2+, per-tool/resource permission isolation, OAuth 2.0;</li>
+      <li><b>Idempotency</b>: <code>tools/call</code> doesn't guarantee idempotency (repeated calls have side effects); write-operation tools need idempotency keys;</li>
+      <li><b>Flow control</b>: Rate limiting/circuit breaking to protect MCP Server (e.g., Resilience4j);</li>
+      <li><b>MCP Gateway</b>: For many servers, introduce a unified gateway for auth, rate limiting, audit, routing, protocol conversion, tool registry;</li>
+      <li><b>Audit logging</b>: Record all tool calls (caller, params, time, result) for observability.</li>
+    </ul>
+
+    <h4>(9) Protocol Evolution & Ecosystem</h4>
+    <p>MCP's latest version (mcp-2025-11-25) introduced several important enhancements:</p>
+    <ul>
+      <li><b>Elicitation</b>: Server can request additional info from user during tool execution;</li>
+      <li><b>Progress Notification</b>: Long-running operations can report progress;</li>
+      <li><b>Resource Subscription</b>: Resource change notifications, real-time data updates;</li>
+      <li><b>Tool/Resource/Prompt list change notifications</b>: Server capability changes auto-notified to Client;</li>
+      <li><b>Sampling enhancement</b>: Server can request Client to call LLM on its behalf, enabling bidirectional collaboration;</li>
+      <li><b>OAuth 2.0 authorization</b>: Standardized security framework for enterprise deployment.</li>
+    </ul>
+    <div class="note">🌐 Official spec site: <code>modelcontextprotocol.io</code>. Framework-wise, Spring AI 1.0+, LangChain, and other mainstream frameworks have integrated MCP support. MCP is evolving from "tool calling standardization" toward "multi-Agent orchestration, workflow standardization," with MCP Server registries and tool marketplaces rapidly emerging.</div>
+
+    <h3 class="sub">9.4 Memory</h3>
+    <p>Agents need three types of memory:</p>
+    <ul>
+      <li><b>Short-term</b>: Current conversation context (multi-turn history);</li>
+      <li><b>Working</b>: Steps and intermediate results in the current plan;</li>
+      <li><b>Long-term</b>: Persisted knowledge/preferences (often via vector DB or database).</li>
+    </ul>
+
+    <h3 class="sub">9.5 Planning</h3>
+    <p>Complex tasks need decomposition into executable steps:</p>
+    <ul>
+      <li><b>Task decomposition</b>: Break large goals into sub-tasks;</li>
+      <li><b>ToT / CoT</b>: Multi-path reasoning and step-by-step thinking;</li>
+      <li><b>Reflection</b>: Self-check and revise after completion;</li>
+      <li><b>Sub-agents</b>: Delegate sub-tasks to specialized agents.</li>
+    </ul>
+
+    <h3 class="sub">9.6 Multi-Agent Collaboration</h3>
+    <p>Multiple agents each handle their specialty, collaborating on complex workflows (e.g., planning agent + retrieval agent + coding agent + review agent). Representative frameworks:</p>
+    <ul>
+      <li><b>AutoGen</b> (Microsoft): Multi-agent dialogue collaboration;</li>
+      <li><b>CrewAI</b>: Role-based team collaboration, easy to use;</li>
+      <li><b>LangGraph</b>: Graph-structured multi-agent state machine orchestration.</li>
+    </ul>
+
+    <h3 class="sub">9.7 Agent Engineering Challenges</h3>
+    <ul>
+      <li><b>Error propagation</b>: One step's error amplifies; need exception handling, retry, budget limits;</li>
+      <li><b>Token consumption</b>: Multi-step loops consume massive context; control tool result size;</li>
+      <li><b>Security risks</b>: Tool permission overreach, prompt injection, arbitrary code execution — must <b>least privilege + whitelist + human confirmation for critical ops</b>;</li>
+      <li><b>Observability</b>: Log every step's thought/tool call for debugging.</li>
+    </ul>
+
+    <h3 class="sub">9.8 Mainstream Agent Frameworks</h3>
+    <table>
+      <tr><th>Framework</th><th>Positioning</th></tr>
+      <tr><td>LangGraph / LangChain</td><td>State machine orchestration, full ecosystem</td></tr>
+      <tr><td>AutoGen</td><td>Multi-agent dialogue collaboration</td></tr>
+      <tr><td>CrewAI</td><td>Role-based multi-agent, easy to use</td></tr>
+      <tr><td>OpenAI Agents SDK</td><td>Lightweight official agent framework</td></tr>
+      <tr><td>Dify / Coze</td><td>Visual agent building, low-code</td></tr>
+    </table>
+    <div class="tip">💡 Practical advice: Start with <b>single-tool, short-loop</b> agents (e.g., "query DB → answer"), then add complex loops. Don't jump to multi-agent — it's hard to debug.</div>
+  </div>
+</section>
+
+    <section id="ch10">
+  <div class="card">
+    <h2 class="sec">Chapter 10 · Evaluation & Observability</h2>
+    <h3 class="sub">10.1 Why Evaluation Matters</h3>
+    <p>LLM outputs are <b>non-deterministic and prone to hallucination</b> — you can't just "run it and it works" like traditional software. Building AI applications requires continuous quality evaluation, otherwise problems are hard to catch post-launch and iterations lack basis. Evaluation is the <b>foundation of engineering</b>.</p>
+
+    <h3 class="sub">10.2 Model Capability Evaluation (Benchmarks)</h3>
+    <table>
+      <tr><th>Dimension</th><th>Benchmarks</th><th>What It Measures</th></tr>
+      <tr><td>General Knowledge</td><td>MMLU, C-Eval, CMMLU</td><td>Breadth of cross-disciplinary knowledge</td></tr>
+      <tr><td>Reasoning</td><td>GSM8K (math), BBH</td><td>Math/logic reasoning ability</td></tr>
+      <tr><td>Code</td><td>HumanEval, MBPP</td><td>Code generation correctness</td></tr>
+      <tr><td>Chinese Understanding</td><td>C-Eval, SuperCLUE</td><td>Chinese language proficiency</td></tr>
+      <tr><td>Instruction Following</td><td>IFEval</td><td>Whether instructions/format are strictly followed</td></tr>
+    </table>
+
+    <h3 class="sub">10.3 Application Evaluation: Three Categories of Metrics</h3>
+    <ul>
+      <li><b>Quality metrics</b>: Accuracy, faithfulness, relevance, completeness, format compliance;</li>
+      <li><b>Performance metrics</b>: First-token latency, total latency, throughput (tokens/s), error rate;</li>
+      <li><b>Cost metrics</b>: Token consumption per request, inference cost, cache hit rate.</li>
+    </ul>
+
+    <h3 class="sub">10.4 Human Evaluation vs. LLM-as-Judge</h3>
+    <ul>
+      <li><b>Human evaluation</b>: Most reliable, but expensive, slow, hard to scale — used for spot checks and small samples;</li>
+      <li><b>LLM-as-judge</b>: Use a strong model to score outputs, scalable; watch for <b>position bias, self-preference</b> — best to use open-source strong models with consistency checks.</li>
+    </ul>
+    <pre><code>// LLM-as-judge scoring prompt example
+You are an evaluator. Score the response based on "faithfulness, relevance, format" (1-5):
+Reference answer: ...
+Model output: ...
+Provide score and brief reasoning.</code></pre>
+
+    <h3 class="sub">10.5 Hallucination Detection</h3>
+    <p>Hallucination = model output contradicts facts/given materials. Mitigation and detection:</p>
+    <ul>
+      <li>Use RAG to constrain to source materials; require "answer only based on provided materials";</li>
+      <li>Require the model to provide <b>citations</b> for human verification;</li>
+      <li>Use <b>FactScore / faithfulness scoring</b> to evaluate consistency between output and materials;</li>
+      <li>Add <b>rule-based validation</b> for critical scenarios (numbers, enums, formats).</li>
+    </ul>
+
+    <h3 class="sub">10.6 Observability (LLMOps)</h3>
+    <p>Production AI applications need monitoring:</p>
+    <ul>
+      <li><b>Tracing</b>: Record every request's prompt, tool calls, output, token count;</li>
+      <li><b>Metrics</b>: Latency, throughput, error rate, cost;</li>
+      <li><b>Logs & replay</b>: Save samples for reproduction when issues arise;</li>
+      <li><b>Evaluation backfill</b>: Periodically score live samples to detect quality degradation.</li>
+    </ul>
+
+    <h3 class="sub">10.7 Common Tools</h3>
+    <table>
+      <tr><th>Tool</th><th>Purpose</th></tr>
+      <tr><td>LangSmith</td><td>Trace/evaluate/debug LLM applications</td></tr>
+      <tr><td>Langfuse</td><td>Open-source LLM observability platform</td></tr>
+      <tr><td>OpenTelemetry</td><td>General-purpose observability integration</td></tr>
+      <tr><td>LLM eval frameworks</td><td>DeepEval, promptfoo, Ragas (RAG-specific)</td></tr>
+    </table>
+
+    <h3 class="sub">10.8 Build Your Own Evaluation Set</h3>
+    <p>For your application, prepare <b>50–200 real/representative test cases</b> (including edge cases and refusal scenarios), run them after every change to compare — preventing "fix one, break many." This is a low-cost, high-value engineering habit.</p>
+    <div class="tip">💡 Don't launch based on "feels good." Build a minimal evaluation set so every change has <b>quantitative backing</b> — this is the most important difference between professional engineers and hobbyists.</div>
+  </div>
+</section>
+    <section id="ch11">
+  <div class="card">
+    <h2 class="sec">Chapter 11 · Open-Source Model Landscape</h2>
+    <h3 class="sub">11.1 The Open-Source Landscape (2026 Perspective)</h3>
+    <p>By 2026, open-source LLMs have moved from "chasing closed-source" to "partially on par or even surpassing." The open-closed capability gap has narrowed significantly, forming a <b>US-China dual-stronghold, multi-polar</b> landscape. Choosing a model isn't just about scores — consider <b>Chinese capability, license, deployment cost, ecosystem maturity</b>.</p>
+    <div class="note">⚠️ Note: LLMs iterate rapidly. This section provides "landscape thinking + mainstream representatives" — check official sources for specific versions and rankings. Focus on <b>capability tiers and applicable scenarios</b>, not just scores.</div>
+
+    <h3 class="sub">11.2 Major Open-Source Families</h3>
+    <table>
+      <tr><th>Family</th><th>Developer</th><th>Characteristics</th><th>Representative Models</th></tr>
+      <tr><td>Qwen</td><td>Alibaba</td><td>Strong Chinese, full scale range (0.5B~hundreds of B), mature ecosystem, good tool calling</td><td>Qwen2.5 / Qwen3 series</td></tr>
+      <tr><td>DeepSeek</td><td>DeepSeek</td><td>Strong reasoning, low training cost, outstanding value</td><td>DeepSeek-V3 / R1</td></tr>
+      <tr><td>LLaMA</td><td>Meta</td><td>Pioneer of open-source ecosystem, richest community resources</td><td>Llama 3 / Llama 4</td></tr>
+      <tr><td>GLM</td><td>Zhipu AI</td><td>Domestic, good tool calling/long context</td><td>GLM-4 / GLM-5</td></tr>
+      <tr><td>Mistral</td><td>Mistral (France)</td><td>Lightweight and efficient, MoE pioneer</td><td>Mistral Large / Mixtral</td></tr>
+      <tr><td>Gemma</td><td>Google</td><td>Google open-source, suited for research and deployment</td><td>Gemma 2 / 3</td></tr>
+      <tr><td>Kimi</td><td>Moonshot AI</td><td>Strong long-text processing</td><td>Kimi K2 / K2.6</td></tr>
+      <tr><td>DeepSeek ecosystem</td><td>Community</td><td>Many reasoning/code-optimized derivative models</td><td>DeepSeek-related</td></tr>
+    </table>
+
+    <h3 class="sub">11.3 Tier Landscape (Mid-2026 Reference)</h3>
+    <ul>
+      <li><b>Tier 1 (Flagship, ~90 points)</b>: Claude Opus, GPT series, Gemini Pro, GLM flagship, Qwen3-Max, DeepSeek flagship — domestic flagships have entered Tier 1;</li>
+      <li><b>Tier 2 (Commercial mainstay, 80–90)</b>: Mistral Large, Grok, DeepSeek V4, Kimi K2, etc., focusing on cost/tool calling/long context;</li>
+      <li><b>Open-source popular tier (7B~32B)</b>: Qwen2.5-7B/14B/32B, Llama 3, GLM-4 series — suited for self-deployment, fine-tuning, local applications.</li>
+    </ul>
+
+    <h3 class="sub">11.4 Open-Source vs. Closed-Source: How to Choose</h3>
+    <table>
+      <tr><th>Dimension</th><th>Open-Source</th><th>Closed-Source (API)</th></tr>
+      <tr><td>Data privacy</td><td>Data stays local, controllable</td><td>Data sent to third party</td></tr>
+      <tr><td>Cost</td><td>One-time self-deployment cost</td><td>Pay-per-use, flexible</td></tr>
+      <tr><td>Customization</td><td>Can fine-tune, modify architecture</td><td>Limited</td></tr>
+      <tr><td>Capability ceiling</td><td>Generally slightly below top closed-source</td><td>Top models are stronger</td></tr>
+      <tr><td>Operations</td><td>Need to deploy and tune yourself</td><td>Managed, hassle-free</td></tr>
+    </table>
+    <div class="tip">💡 Pragmatic advice: <b>Sensitive data/customization needs → open-source self-deploy; maximize capability/fast launch → closed-source API</b>. Many teams use a hybrid: "closed-source API as fallback + open-source for sensitive scenarios."</div>
+
+    <h3 class="sub">11.5 How to Track Model Progress</h3>
+    <ul>
+      <li><b>Hugging Face Leaderboard</b>: Open LLM leaderboard;</li>
+      <li><b>Chinese benchmarks</b>: SuperCLUE, C-Eval leaderboards;</li>
+      <li><b>Official blogs / papers</b>: Meta, Google DeepMind, Alibaba, DeepSeek, Zhipu, etc.;</li>
+      <li><b>Community</b>: GitHub, Hugging Face discussions, tech media.</li>
+    </ul>
+    <div class="warn">⚠️ Leaderboard scores <b>get outdated and may be skewed</b>. The most reliable approach: run your own <b>A/B comparison</b> with real business data (see Chapter 10), not just rankings.</div>
+  </div>
+</section>
+    <section id="ch12">
+  <div class="card">
+    <h2 class="sec">Chapter 12 · Learning Roadmap & Resources</h2>
+    <h3 class="sub">12.1 Common Learning Pitfalls</h3>
+    <ul>
+      <li><b>Hoarding materials</b>: Collect tons of courses but never practice — the more you "learn," the more confused you get;</li>
+      <li><b>Watch but don't practice</b>: No code, no projects — forgotten immediately after watching;</li>
+      <li><b>Skip basics, jump to projects</b>: Build agents without understanding Transformers — can't debug when things go wrong;</li>
+      <li><b>No direction</b>: Don't know whether you want to be a "prompt engineer / deployment engineer / app developer / training algorithm engineer."</li>
+    </ul>
+    <div class="tip">✅ Core mindset: <b>Define goal → Practice in small steps → Project-driven</b>. Theory supports practice; practice is primary.</div>
+
+    <h3 class="sub">12.2 Phased Learning Roadmap</h3>
+    <h4>Phase 1: Beginner (2–4 weeks) — Learn to Use AI</h4>
+    <ul>
+      <li>Understand what LLMs are and how to use them (this manual, Ch. 1 & 7);</li>
+      <li>Use ChatGPT/Tongyi/Kimi daily for real tasks, practice prompting;</li>
+      <li>Write a simple conversational script using the API (Python + OpenAI-compatible interface).</li>
+    </ul>
+    <h4>Phase 2: Application Development (4–8 weeks) — Build Products with AI</h4>
+    <ul>
+      <li>Master prompt engineering + structured output (Ch. 7);</li>
+      <li>Build a <b>RAG Q&A</b> system (Ch. 8), feed documents to the model;</li>
+      <li>Learn LangChain/LlamaIndex/Dify to build a usable Agent (Ch. 9);</li>
+      <li>Build a minimal evaluation set, assess performance (Ch. 10).</li>
+    </ul>
+    <h4>Phase 3: Deployment/Fine-tuning (Optional advanced, 4–8 weeks) — Train/Deploy Yourself</h4>
+    <ul>
+      <li>Learn Python + PyTorch basics, model loading and inference (Ch. 5 & 6);</li>
+      <li>Run open-source models locally with Ollama;</li>
+      <li>Do a LoRA fine-tune with LLaMA-Factory (Ch. 6).</li>
+    </ul>
+
+    <h3 class="sub">12.3 Recommended Learning Resources</h3>
+    <table>
+      <tr><th>Type</th><th>Resource</th><th>Notes</th></tr>
+      <tr><td>Book</td><td>"Deep Learning" (Goodfellow)</td><td>Deep learning theory foundation</td></tr>
+      <tr><td>Book</td><td>"Dive into Deep Learning" (Mu Li)</td><td>PyTorch hands-on intro, free online</td></tr>
+      <tr><td>Book</td><td>"Build a Large Language Model (From Scratch)"</td><td>Build a GPT from scratch, free open-source</td></tr>
+      <tr><td>Course</td><td>Andrew Ng's "ChatGPT Prompt Engineering"</td><td>Classic free prompt engineering course</td></tr>
+      <tr><td>Course</td><td>Andrej Karpathy's <b>Neural Networks: Zero to Hero</b></td><td>Hands-on neural network implementation from scratch</td></tr>
+      <tr><td>Course</td><td>Stanford CS224N</td><td>Advanced NLP & deep learning</td></tr>
+      <tr><td>Docs</td><td>Hugging Face official tutorials / docs</td><td>Standard reference for loading/fine-tuning/inference</td></tr>
+      <tr><td>Docs</td><td>OpenAI / Qwen / DeepSeek official docs</td><td>API, tool calling, structured output</td></tr>
+      <tr><td>Hands-on</td><td>Kaggle / Colab</td><td>Free GPU for model experiments</td></tr>
+      <tr><td>Community</td><td>GitHub / Hugging Face / tech media</td><td>Track frontier and ecosystem</td></tr>
+    </table>
+
+    <h3 class="sub">12.4 A Minimal Viable Path (For Beginners)</h3>
+    <pre><code>Step 1: Read this manual's Ch. 1 & 7; use AI for 7 days of daily tasks to practice prompting.
+Step 2: Learn to write a 20-line Q&A script using the API.
+Step 3: Build a "document Q&A" app with Dify/Coze (RAG).
+Step 4: Connect it to a real scenario (e.g., knowledge Q&A in your work).
+Step 5: Build a 50-case evaluation set; iterate and evaluate.
+—— You now have the complete ability to "build products with AI."
+(Advanced: run models locally → LoRA fine-tune → deploy to production)</code></pre>
+
+    <h3 class="sub">12.5 Tips for "Fragmented Time, Learn-While-Using"</h3>
+    <ul>
+      <li>Use <b>1–2 hours in the evening</b>, each time tackling one small goal (e.g., "today: learn RAG chunking");</li>
+      <li>Immediately <b>apply what you learn to real problems</b> at hand (your work, side projects) — that's how it sticks best;</li>
+      <li>Every small project that "runs" is positive feedback.</li>
+    </ul>
+    <div class="tip">💡 The biggest mistake in LLM learning is "hoarding courses without practicing." <b>Build a project that solves your real problem</b> — that's worth more than ten courses. This is also the original intent of this manual.</div>
+  </div>
+</section>
+    
+    <footer>LLM Study Manual · <a href="大模型系统学习手册.html">中文版</a></footer>
+  </main>
+</div>
+
+<script>
+/* ===== 大模型系统学习手册 · 导航脚本 ===== */
+(function(){
+  var nav = document.getElementById('nav');
+  if(!nav) return;
+
+  // 检测当前语言
+  var html = document.documentElement;
+  var isEN = html.lang === 'en';
+
+  var items = isEN ? [
+    {t:'1 · Fundamentals & How LLMs Work', id:'ch1'},
+    {t:'2 · Architecture & Attention', id:'ch2'},
+    {t:'3 · Pretraining & Emergence', id:'ch3'},
+    {t:'4 · Alignment & Safety', id:'ch4'},
+    {t:'5 · Inference & Deployment', id:'ch5'},
+    {t:'6 · Fine-tuning & PEFT', id:'ch6'},
+    {t:'7 · Prompt Engineering', id:'ch7'},
+    {t:'8 · RAG', id:'ch8'},
+    {t:'9 · AI Agents', id:'ch9'},
+    {t:'10 · Evaluation & Observability', id:'ch10'},
+    {t:'11 · Open-Source Models', id:'ch11'},
+    {t:'12 · Learning Roadmap & Resources', id:'ch12'}
+  ] : [
+    {t:'1 · 基础概念与原理', id:'ch1'},
+    {t:'2 · 架构与注意力', id:'ch2'},
+    {t:'3 · 预训练与涌现', id:'ch3'},
+    {t:'4 · 对齐与安全', id:'ch4'},
+    {t:'5 · 推理与部署', id:'ch5'},
+    {t:'6 · 微调与 PEFT', id:'ch6'},
+    {t:'7 · 提示词工程', id:'ch7'},
+    {t:'8 · RAG 检索增强', id:'ch8'},
+    {t:'9 · AI Agent', id:'ch9'},
+    {t:'10 · 评估与观测', id:'ch10'},
+    {t:'11 · 主流开源模型', id:'ch11'},
+    {t:'12 · 学习路线与资源', id:'ch12'}
+  ];
+
+  items.forEach(function(it){
+    var a=document.createElement('a');
+    a.href='#'+it.id; a.textContent=it.t;
+    a.addEventListener('click',function(){
+      var links=nav.querySelectorAll('a');
+      links.forEach(function(x){x.classList.remove('active')});
+      a.classList.add('active');
+    });
+    nav.appendChild(a);
+  });
+
+  // 滚动时高亮当前章节
+  var sections = document.querySelectorAll('section[id]');
+  var navLinks = nav.querySelectorAll('a');
+  function onScroll(){
+    var scrollY = window.scrollY + 100;
+    sections.forEach(function(sec){
+      var top = sec.offsetTop;
+      var bottom = top + sec.offsetHeight;
+      if(scrollY >= top && scrollY < bottom){
+        var id = sec.id;
+        navLinks.forEach(function(link){
+          if(link.getAttribute('href') === '#'+id){
+            link.classList.add('on');
+          } else {
+            link.classList.remove('on');
+          }
+        });
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>

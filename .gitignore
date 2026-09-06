@@ -1,6 +1,7 @@
 # 只保留手册相关文件，忽略其他所有内容
 *
 !大模型系统学习手册.html
+!LLM_Study_Manual.html
 !index.html
 !index_en.html
 !README.md

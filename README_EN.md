@@ -27,7 +27,14 @@ A self-study handbook that systematically covers the complete LLM knowledge chai
 | 简体中文 | https://zane517.github.io/llm-study-manual/ |
 | English | https://zane517.github.io/llm-study-manual/index_en.html |
 
-> You can also download `大模型系统学习手册.html` from the repo root for offline reading (single file, zero dependency).
+## Offline Download
+
+| Version | File |
+|---|---|
+| 简体中文 | [`大模型系统学习手册.html`](./大模型系统学习手册.html) |
+| English | [`LLM_Study_Manual.html`](./LLM_Study_Manual.html) |
+
+> Single file, zero dependency. Download and open in any browser.
 
 ## Table of Contents
 
@@ -54,7 +61,8 @@ A self-study handbook that systematically covers the complete LLM knowledge chai
 ├── assets/
 │   ├── css/style.css       # Stylesheet
 │   └── js/main.js          # Scripts
-├── 大模型系统学习手册.html   # Single-file offline version (Chinese)
+├── 大模型系统学习手册.html   # Single-file offline (Chinese)
+├── LLM_Study_Manual.html    # Single-file offline (English)
 ├── README.md               # Chinese README
 └── README_EN.md            # English README
 ```
@@ -63,7 +71,7 @@ A self-study handbook that systematically covers the complete LLM knowledge chai
 
 1. Clone the repo: `git clone https://github.com/Zane517/llm-study-manual.git`
 2. Open `index.html` (Chinese) or `index_en.html` (English) in your browser
-3. Or simply double-click `大模型系统学习手册.html` for offline reading
+3. Or download an offline version: `大模型系统学习手册.html` (Chinese) / `LLM_Study_Manual.html` (English) — just double-click to open
 
 ## License
 
