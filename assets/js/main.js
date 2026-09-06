@@ -42,12 +42,28 @@
       var links=nav.querySelectorAll('a');
       links.forEach(function(x){x.classList.remove('active')});
       a.classList.add('active');
+      // 移动端：点击导航后自动收起侧边栏
+      var sidebar = document.querySelector('.sidebar');
+      if(sidebar && window.innerWidth <= 820){
+        sidebar.classList.remove('open');
+      }
     });
     nav.appendChild(a);
   });
 
+  // 移动端：点击 brand 区域展开/收起侧边栏
+  var brand = document.querySelector('.sidebar .brand');
+  var sidebar = document.querySelector('.sidebar');
+  if(brand && sidebar){
+    brand.addEventListener('click', function(){
+      if(window.innerWidth <= 820){
+        sidebar.classList.toggle('open');
+      }
+    });
+  }
+
   // 滚动时高亮当前章节
-  var sections = document.querySelectorAll('section[id]');
+  var sections = document.querySelectorAll('section[ID]');
   var navLinks = nav.querySelectorAll('a');
   function onScroll(){
     var scrollY = window.scrollY + 100;
